@@ -137,3 +137,46 @@ CREATE TABLE Bairro_Atendido_Fornecedor (
   id_bairro INT NOT NULL REFERENCES Bairro(id_bairro) ON DELETE CASCADE,
   PRIMARY KEY (id_fornecedor, id_bairro)
 );
+
+-- ===========================================================================
+-- ====================         VIEWS (SEGURANÇA)         ====================
+-- ===========================================================================
+-- ===========================================================================
+-- ====================   VIEW CLIENTES (SEM SENHA_HASH)  ====================
+-- ===========================================================================
+
+CREATE OR REPLACE VIEW vw_Cliente AS
+SELECT 
+    id_cliente,
+    nome,
+    sobrenome,
+    email,
+    telefone_principal,
+    telefone_alternativo,
+    permissao_contato_fornecedor,
+    cpf,
+    vale_gas_ativo,
+    data_nascimento,
+    criado_em,
+    atualizado_em,
+    status_cliente
+FROM Cliente;
+
+-- ===========================================================================
+-- ==================== VIEW FORNECEDORES (SEM SENHA_HASH)====================
+-- ===========================================================================
+
+CREATE OR REPLACE VIEW vw_Fornecedor AS
+SELECT 
+    id_fornecedor,
+    nome_fantasia,
+    razao_social,
+    email,
+    telefone_principal,
+    telefone_alternativo,
+    permissao_contato_cliente,
+    cnpj,
+    criado_em,
+    atualizado_em,
+    status_fornecedor
+FROM Fornecedor;
