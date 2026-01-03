@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { healthCheck } from "../controllers";
-import { adicionarClientes, listarClientes, listarCliente, editarCliente, excluirCliente } from "../controllers";
+import * as cliente from "../controllers/index";
 
 export const router = Router();
 
@@ -8,10 +8,10 @@ export const router = Router();
 router.get("/healthcheck", healthCheck);
 
 // Clientes
-router.post("/clientes", adicionarClientes);
-router.get("/clientes", listarClientes);
-router.get("/clientes/:id", listarCliente);
-router.put("/clientes/:id", editarCliente);
-router.delete("/clientes/:id", excluirCliente);
+router.post("/clientes", cliente.adicionarClientes);
+router.get("/clientes", cliente.listarClientes);
+router.get("/clientes/:id", cliente.listarCliente);
+router.put("/clientes/:id", cliente.editarCliente);
+router.delete("/clientes/:id", cliente.excluirCliente);
 
 export default router;
