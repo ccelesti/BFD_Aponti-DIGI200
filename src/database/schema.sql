@@ -72,7 +72,8 @@ CREATE TABLE Bairro (
             'GO','MA','MT','MS','MG','PA','PB','PR',
             'PE','PI','RJ','RN','RS','RO','RR','SC',
             'SP','SE','TO'      
-))
+)),
+  CONSTRAINT bairro_municipio_unico UNIQUE (nome_bairro, municipio)
 );
 
 -- ===========================================================================
