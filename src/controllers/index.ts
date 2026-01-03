@@ -171,3 +171,87 @@ export async function excluirCliente(req: Request, res: Response) {
     });
   }
 }
+
+// Atualiza permissão de privacidade do Cliente
+// PUT /clientes/:id/privacidade
+// Body: {"permissao_contato_fornecedor": true/false}
+export async function privacidadeCliente(req: Request, res: Response) {
+  try {
+    const id = Number(req.params.id);
+    const { permissao_contato_fornecedor } = req.body;
+
+    const result = await pool.query(`UPDATE cliente SET permissao_contato_fornecedor = $1 WHERE id_cliente=$2 RETURNING *;`, [permissao_contato_fornecedor, id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        message: "Cliente não encontrado",
+        cliente: null
+      });
+    }
+
+    return res.status(200).json({
+      message: `Configuração de privacidade do cliente ${result.rows[0].nome} atualizada com sucesso!`,
+      cliente: result.rows[0]
+    });
+
+  } catch (error) {
+    console.error(`Erro ao atualizar privacidade do cliente ${req.params.id}: `, error);
+
+    return res.status(500).json({
+      message: "Erro ao atualizar privacidade do cliente",
+      cliente: null
+    });
+  }
+}
+
+// Atualiza status do benefício Vale Gás do cliente
+// PUT /clientes/:id/vale-gas
+// Body: {"vale_gas_ativo": true/false}
+export async function valeGasCliente(req: Request, res: Response) {
+  try {
+    const id = Number(req.params.id);
+    const { vale_gas_ativo } = req.body;
+
+    const result = await pool.query(`UPDATE cliente SET vale_gas_ativo = $1 WHERE id_cliente=$2 RETURNING *;`, [vale_gas_ativo, id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        message: "Cliente não encontrado",
+        cliente: null
+      });
+    }
+
+    return res.status(200).json({
+      message: `Status do benefício Vale Gás do cliente ${result.rows[0].nome} atualizado!`,
+      cliente: result.rows[0]
+    });
+
+  } catch (error) {
+    console.error(`Ocorreu um erro ao registrar a autodeclaração do Vale Gás: `, error);
+
+    return res.status(500).json({
+      message: "Erro ao registrar a autodeclaração do cliente",
+      cliente: null
+    });
+  }
+}
+
+// Exibe todos os bairros
+// GET /bairros
+export async function listarBairros(req: Request, res: Response) {
+  try {
+    const result = await pool.query("SELECT * FROM bairro");
+    return res.status(200).json({
+      message: `Foram encontrados ${result.rows.length} bairros.`,
+      bairros: result.rows
+    });
+
+  } catch (error) {
+    console.error("Erro ao exibir bairros: ", error);
+    
+    return res.status(500).json({
+      message: "Erro ao buscar bairros",
+      bairros: null
+    });
+  }
+}
