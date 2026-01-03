@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { healthCheck } from "../controllers";
 import * as cliente from "../controllers/index";
+import * as fornecedor from "../controllers/fornecedor";
 import { listarBairros } from "../controllers";
 
 export const router = Router();
@@ -14,6 +15,13 @@ router.get("/clientes", cliente.listarClientes);
 router.get("/clientes/:id", cliente.listarCliente);
 router.put("/clientes/:id", cliente.editarCliente);
 router.delete("/clientes/:id", cliente.excluirCliente);
+
+// Fornecedor
+router.post("/fornecedor", fornecedor.adicionarFornecedor);
+router.get("/fornecedores", fornecedor.listarFornecedor);
+router.get("/fornecedores/:id", fornecedor.listarFornecedores);
+router.put("/fornecedores/:id", fornecedor.editarFornecedor);
+router.delete("/fornecedores/:id", fornecedor.excluirFornecedor);
 
 // PUT /clientes/:id/privacidade
 // Body: { permissao_contato_fornecedor: boolean }
