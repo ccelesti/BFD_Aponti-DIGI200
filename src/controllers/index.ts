@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { pool } from "../database/db";
-import { Cliente } from "../models";
+import { Cliente, EnderecoCliente } from "../models";
 
 // Health check da API
 // GET /healthcheck
@@ -252,6 +252,39 @@ export async function listarBairros(req: Request, res: Response) {
     return res.status(500).json({
       message: "Erro ao buscar bairros",
       bairros: null
+    });
+  }
+}
+
+// Cadastro de endereço do cliente
+// POST /clientes/:id/endereco
+export async function adicionarEnderecoCliente(req: Request, res: Response) {
+  try {
+    const id = Number(req.params.id);
+
+    const {cep, endereco_logradouro, numero = "S/N", complemento = null, id_bairro, nome_endereco = "Casa", endereco_principal = false
+    } = req.body;
+
+    const endereco = await pool.query(`INSERT INTO endereco (cep, endereco_logradouro, numero, complemento, id_bairro) VALUES ($1,$2,$3,$4,$5)  RETURNING id_endereco`, [cep, endereco_logradouro, numero, complemento, id_bairro]
+    );
+
+    const id_endereco = endereco.rows[0].id_endereco;
+
+    const result = await pool.query(
+      `INSERT INTO endereco_cliente (id_cliente, id_endereco, nome_endereco, endereco_principal) VALUES ($1,$2,$3,$4) RETURNING *`, [id, id_endereco, nome_endereco, endereco_principal]
+    );
+
+    return res.status(201).json({
+      message: "Endereço vinculado ao cliente com sucesso!",
+      endereco_cliente: result.rows[0]
+    });
+
+  } catch (error) {
+    console.error("Erro ao cadastrar endereço do cliente:", error);
+
+    return res.status(500).json({
+      message: "Erro ao cadastrar endereço do cliente",
+      endereco_cliente: null
     });
   }
 }

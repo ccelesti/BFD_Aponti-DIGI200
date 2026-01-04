@@ -16,10 +16,14 @@ router.get("/clientes/:id", cliente.listarCliente);
 router.put("/clientes/:id", cliente.editarCliente);
 router.delete("/clientes/:id", cliente.excluirCliente);
 
+// POST /clientes/:id/endereco
+router.post("/clientes/:id/endereco", cliente.adicionarEnderecoCliente);
+
+
 // Fornecedor
-router.post("/fornecedor", fornecedor.adicionarFornecedor);
-router.get("/fornecedores", fornecedor.listarFornecedor);
-router.get("/fornecedores/:id", fornecedor.listarFornecedores);
+router.post("/fornecedores", fornecedor.adicionarFornecedor);
+router.get("/fornecedores", fornecedor.listarFornecedores);
+router.get("/fornecedores/:id", fornecedor.listarFornecedor);
 router.put("/fornecedores/:id", fornecedor.editarFornecedor);
 router.delete("/fornecedores/:id", fornecedor.excluirFornecedor);
 

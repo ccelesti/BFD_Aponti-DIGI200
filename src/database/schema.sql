@@ -181,3 +181,30 @@ SELECT
     atualizado_em,
     status_fornecedor
 FROM Fornecedor;
+
+-- ===========================================================================
+-- ===================== VIEW ENDEREÇO CLIENTE  ==============================
+-- ===========================================================================
+
+CREATE OR REPLACE VIEW vw_Cliente_Endereco AS
+SELECT
+  c.id_cliente,
+  c.nome,
+  c.sobrenome,
+  e.cep,
+  e.endereco_logradouro,
+  e.numero,
+  e.complemento,
+  b.nome_bairro,
+  b.municipio,
+  b.estado,
+  ec.nome_endereco,
+  ec.endereco_principal,
+  ec.endereco_ativo
+FROM cliente AS c
+JOIN endereco_cliente AS ec
+  ON ec.id_cliente = c.id_cliente
+JOIN endereco AS e
+  ON e.id_endereco = ec.id_endereco
+LEFT JOIN bairro AS b
+  ON b.id_bairro = e.id_bairro;
