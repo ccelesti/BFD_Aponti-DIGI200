@@ -3,7 +3,7 @@ import { healthCheck } from "../controllers";
 import * as cliente from "../controllers/index";
 import * as fornecedor from "../controllers/fornecedor";
 import { listarBairros } from "../controllers";
-
+import * as bairroFornecedor from "../controllers/bairro_fornecedor";
 export const router = Router();
 
 // Healthcheck da API
@@ -37,5 +37,13 @@ router.put("/clientes/:id/vale-gas", cliente.valeGasCliente);
 
 // Bairros
 router.get("/bairros", listarBairros);
+
+// Bairros Atendidos pelos Fornecedores
+router.post("/fornecedores/adicionar-area", bairroFornecedor.adicionarBairroAtendido );
+router.get("/fornecedores/areas", bairroFornecedor.listarBairroAtendido);
+router.get("/fornecedores/:id/areas-atendidas", bairroFornecedor.listarBairrosAtendidos);
+router.put("/fornecedores/:id/editar-areas", bairroFornecedor.editarBairroFornecido);
+router.delete("/fornecedores/:id/delete-area", bairroFornecedor.excluirBairroAtendido);
+
 
 export default router;
