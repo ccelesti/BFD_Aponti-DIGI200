@@ -16,9 +16,12 @@ router.get("/clientes/:id", cliente.listarCliente);
 router.put("/clientes/:id", cliente.editarCliente);
 router.delete("/clientes/:id", cliente.excluirCliente);
 
-// POST /clientes/:id/endereco
-router.post("/clientes/:id/endereco", cliente.adicionarEnderecoCliente);
-
+// Endereços de clientes
+router.post("/clientes/:id/enderecos", cliente.adicionarEnderecoCliente);
+router.get("/clientes/:id/enderecos", cliente.visualizarEnderecoCliente);
+router.get("/clientes/:id/enderecos-ativos", cliente.visualizarEnderecosAtivosCliente);
+router.put("/clientes/:id/enderecos/:id_endereco", cliente.editarEnderecoCliente);
+router.delete("/clientes/:id/enderecos/:id_endereco", cliente.excluirEnderecoCliente);
 
 // Fornecedor
 router.post("/fornecedores", fornecedor.adicionarFornecedor);
