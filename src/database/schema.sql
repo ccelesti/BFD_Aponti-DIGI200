@@ -208,3 +208,25 @@ JOIN endereco AS e
   ON e.id_endereco = ec.id_endereco
 LEFT JOIN bairro AS b
   ON b.id_bairro = e.id_bairro;
+
+-- ===========================================================================
+-- ===================== VIEW ENDEREÇO CLIENTE  ==============================
+-- ===========================================================================
+
+CREATE OR REPLACE VIEW vw_Bairro_Atendido_Fornecedor AS
+SELECT
+  f.id_fornecedor,
+  f.nome_fantasia,
+  b.nome_bairro,
+  b.municipio,
+  b.estado
+FROM
+  Bairro_Atendido_Fornecedor AS baf
+JOIN
+  Fornecedor AS f
+ON 
+  baf.id_fornecedor = f.id_fornecedor
+LEFT JOIN 
+  bairro AS b
+ON 
+  b.id_bairro = baf.id_bairro;
