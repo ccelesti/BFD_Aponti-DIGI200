@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { pool } from "../database/db";
-import { Cliente, EnderecoCliente } from "../models";
+import { Cliente } from "../models";
 
 // Health check da API
 // GET /healthcheck
@@ -141,7 +141,6 @@ export async function editarCliente(req: Request, res: Response) {
    }
   }
 
-
 // Desativa cliente pelo ID
 // DELETE /clientes/:id
 export async function excluirCliente(req: Request, res: Response) {
@@ -257,7 +256,7 @@ export async function listarBairros(req: Request, res: Response) {
 }
 
 // Cadastro de endereço do cliente
-// POST /clientes/:id/endereco
+// POST /clientes/:id/enderecos
 export async function adicionarEnderecoCliente(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
@@ -284,6 +283,139 @@ export async function adicionarEnderecoCliente(req: Request, res: Response) {
 
     return res.status(500).json({
       message: "Erro ao cadastrar endereço do cliente",
+      endereco_cliente: null
+    });
+  }
+}
+
+// Exibe todos os endereços do cliente pelo ID
+// GET /clientes/:id/enderecos
+export async function visualizarEnderecoCliente(req: Request, res: Response) {
+  try {
+    const id = Number(req.params.id);
+
+    const result = await pool.query("SELECT * FROM vw_Cliente_Endereco WHERE id_cliente = $1", [id]);
+
+    if (result.rows.length === 0) {
+      
+      return res.status(200).json({
+        message: "Nenhum endereço encontrado para este cliente",
+        enderecos: []
+      });
+    }
+
+      return res.status(200).json({
+        message: `Endereços do cliente listados com sucesso`,
+        enderecos: result.rows
+      })
+    
+  } catch (error) {
+    console.error(`Erro ao buscar endereços do cliente ${req.params.id}: `, error);
+
+    return res.status(500).json({
+      message: "Erro ao buscar endereços do cliente",
+      enderecos: null
+    });
+  }
+}
+
+// Exibe todos os endereços ativos do cliente pelo ID
+// GET /clientes/:id/enderecos-ativos
+export async function visualizarEnderecosAtivosCliente(req: Request, res: Response) {
+  try {
+    const id = Number(req.params.id);
+
+    const result = await pool.query("SELECT * FROM vw_Cliente_Endereco WHERE id_cliente = $1 AND endereco_ativo = true", [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(200).json({
+        message: "Nenhum endereço ativo encontrado para este cliente",
+        enderecos: []
+      });
+    }
+
+    return res.status(200).json({
+      message: `Endereços ativos listados com sucesso!`,
+      enderecos: result.rows
+    });
+
+  } catch (error) {
+    console.error(`Erro ao exibir endereços ativos do cliente ${req.params.id}: `, error);
+
+    return res.status(500).json({
+      message: "Erro ao buscar endereços do cliente",
+      enderecos: null
+    });
+  }
+}
+
+// Edição de endereço do cliente
+// PUT /clientes/:id/enderecos/:id_endereco
+export async function editarEnderecoCliente(req: Request, res: Response) {
+  try {
+    const id_cliente = Number(req.params.id);
+    const id_endereco = Number(req.params.id_endereco);
+
+    const {cep, endereco_logradouro, numero = "S/N", complemento = null, id_bairro, nome_endereco = "Casa", endereco_principal = false
+    } = req.body;
+
+    const verificaEndereco = await pool.query(`SELECT 1 FROM endereco_cliente WHERE id_cliente = $1 AND id_endereco = $2`, [id_cliente, id_endereco]
+    );
+
+    if(verificaEndereco.rows.length === 0) {
+      return res.status(404).json({
+        message: "Endereço não encontrado para este cliente",
+        endereco_cliente: null
+      })
+    }
+
+    const result = await pool.query(`UPDATE endereco SET cep = $1, endereco_logradouro = $2, numero = $3, complemento = $4, id_bairro = $5 WHERE id_endereco=$6 RETURNING *`, [cep, endereco_logradouro, numero, complemento, id_bairro, id_endereco]
+    );
+
+    await pool.query(`UPDATE endereco_cliente SET nome_endereco = $1, endereco_principal = $2, atualizado_em = NOW() WHERE id_endereco=$3`, [nome_endereco, endereco_principal, id_endereco]
+    );
+
+    return res.status(201).json({
+      message: "Endereço do cliente alterado com sucesso!",
+      endereco_cliente: result.rows[0]
+    });
+
+  } catch (error) {
+    console.error(`Erro ao editar endereço ${req.params.id_endereco} do cliente: `, error);
+
+    return res.status(500).json({
+      message: "Erro ao editar endereço do cliente",
+      endereco_cliente: null
+    });
+  }
+}
+
+// Desativa endereços de cliente pelo ID
+// DELETE /clientes/:id/enderecos/:id_endereco
+export async function excluirEnderecoCliente(req: Request, res: Response) {
+  try {
+    const id_cliente = Number(req.params.id);
+    const id_endereco = Number(req.params.id_endereco);
+
+    const result = await pool.query(`UPDATE endereco_cliente SET endereco_ativo = false WHERE id_cliente=$1 AND id_endereco=$2 RETURNING *;`, [id_cliente, id_endereco]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        message: "Endereço não encontrado para este cliente.",
+        endereco_cliente: null
+      });
+    }
+
+    return res.status(200).json({
+      message: `Endereço excluído com sucesso!`,
+      endereco_cliente: result.rows[0]
+    });
+
+  } catch (error) {
+    console.error(`Erro ao excluir endereço: `, error);
+
+    return res.status(500).json({
+      message: "Erro ao excluir endereço de cliente",
       endereco_cliente: null
     });
   }

@@ -26,6 +26,13 @@ router.get("/fornecedores/:id/areas-atendidas", bairroFornecedor.listarBairroAte
 router.put("/fornecedores/:id/areas/:id_bairro", bairroFornecedor.editarBairroFornecido);
 router.delete("/fornecedores/:id/areas/:id_bairro", bairroFornecedor.excluirBairroAtendido);
 
+// Endereços de clientes
+router.post("/clientes/:id/enderecos", cliente.adicionarEnderecoCliente);
+router.get("/clientes/:id/enderecos", cliente.visualizarEnderecoCliente);
+router.get("/clientes/:id/enderecos-ativos", cliente.visualizarEnderecosAtivosCliente);
+router.put("/clientes/:id/enderecos/:id_endereco", cliente.editarEnderecoCliente);
+router.delete("/clientes/:id/enderecos/:id_endereco", cliente.excluirEnderecoCliente);
+
 // Fornecedor
 router.post("/fornecedores", fornecedor.adicionarFornecedor);
 router.get("/fornecedores", fornecedor.listarFornecedores);
