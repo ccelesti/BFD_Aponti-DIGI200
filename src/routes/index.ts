@@ -19,6 +19,12 @@ router.delete("/clientes/:id", cliente.excluirCliente);
 // POST /clientes/:id/endereco
 router.post("/clientes/:id/endereco", cliente.adicionarEnderecoCliente);
 
+// Bairros Atendidos pelos Fornecedores
+router.post("/fornecedores/:id/areas", bairroFornecedor.adicionarBairrosAtendidos);
+router.get("/fornecedores/areas", bairroFornecedor.listarBairrosAtendidos);
+router.get("/fornecedores/:id/areas-atendidas", bairroFornecedor.listarBairroAtendido);
+router.put("/fornecedores/:id/areas/:id_bairro", bairroFornecedor.editarBairroFornecido);
+router.delete("/fornecedores/:id/areas/:id_bairro", bairroFornecedor.excluirBairroAtendido);
 
 // Fornecedor
 router.post("/fornecedores", fornecedor.adicionarFornecedor);
@@ -38,12 +44,6 @@ router.put("/clientes/:id/vale-gas", cliente.valeGasCliente);
 // Bairros
 router.get("/bairros", listarBairros);
 
-// Bairros Atendidos pelos Fornecedores
-router.post("/fornecedores/adicionar-area", bairroFornecedor.adicionarBairroAtendido );
-router.get("/fornecedores/areas", bairroFornecedor.listarBairroAtendido);
-router.get("/fornecedores/:id/areas-atendidas", bairroFornecedor.listarBairrosAtendidos);
-router.put("/fornecedores/:id/editar-areas", bairroFornecedor.editarBairroFornecido);
-router.delete("/fornecedores/:id/delete-area", bairroFornecedor.excluirBairroAtendido);
 
 
 export default router;
