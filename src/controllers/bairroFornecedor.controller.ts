@@ -2,8 +2,12 @@ import { Request, Response } from "express";
 import { pool } from "../database/db";
 import { BairroAtendidoFornecedor} from "../models";
 
-// Adiciona um bairro atendido pelo fornecedor
-// POST /fornecedores/:id/areas
+/**
+ * Adiciona um novo bairro à área de atendimento de um fornecedor específico.
+ * @route POST /fornecedores/:id/areas
+ * @param {string} req.params.id - ID do fornecedor.
+ * @param {number} req.body.id_bairro - ID do bairro a ser vinculado.
+ */
 export async function adicionarBairrosAtendidos(req: Request, res: Response) {
     try {
     const id_fornecedor = Number(req.params.id);
@@ -44,8 +48,10 @@ export async function adicionarBairrosAtendidos(req: Request, res: Response) {
     }
   }
   
-// Exibe todos os bairros atendidos de um fornecedor
-// GET /fornecedores/areas
+/**
+ * Exibe todos os bairros atendidos pelos fornecedores cadastrados no sistema.
+ * * @route GET /fornecedores/areas
+ */
 export async function listarBairrosAtendidos(req: Request, res: Response) {
   try {
     const result = await pool.query("SELECT * FROM vw_Bairro_Atendido_Fornecedor ORDER BY nome_fantasia, nome_bairro");
@@ -65,8 +71,11 @@ export async function listarBairrosAtendidos(req: Request, res: Response) {
   }
 }
 
-// Exibe bairro atendido pelo fornecedor por ID
-// GET /fornecedores/:id/areas-atendidas
+/**
+ * Exibe todos os bairros atendidos por um fornecedor específico.
+ * @route GET /fornecedores/:id/areas-atendidas
+ * @param {string} req.params.id - ID do fornecedor.
+ */
 export async function listarBairroAtendido(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
@@ -96,8 +105,13 @@ export async function listarBairroAtendido(req: Request, res: Response) {
   }
 }
 
-// Atualiza bairro atendido pelo fornecedor por ID
-// PUT /fornecedores/:id/areas/:id_bairro
+/**
+ * Atualiza um bairro específico na área de atendimento de um fornecedor específico.
+ * * @route PUT /fornecedores/:id/areas/:id_bairro
+ * @param {string} req.params.id - ID do fornecedor.
+ * @param {string} req.params.id_bairro - ID do bairro atual.
+ * @param {number} req.body.id_bairro_novo - Novo ID do bairro a ser definido.
+ */
 export async function editarBairroFornecido(req: Request, res: Response) {
   try{
     const id_fornecedor = Number(req.params.id);
@@ -138,8 +152,12 @@ export async function editarBairroFornecido(req: Request, res: Response) {
   }
 
 
-// Deleta um bairro atendido
-// DELETE /fornecedores/:id/areas/:id_bairro
+/**
+ * Remove um bairro específico da área atendida por um fornecedor específico.
+ * @route DELETE /fornecedores/:id/areas/:id_bairro
+ * @param {string} req.params.id - ID do fornecedor.
+ * @param {string} req.params.id_bairro - ID do bairro a ser removido.
+ */
 export async function excluirBairroAtendido(req: Request, res: Response) {
   try {
     const id_fornecedor = Number(req.params.id);

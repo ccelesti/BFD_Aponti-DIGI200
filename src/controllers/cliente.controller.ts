@@ -2,8 +2,10 @@ import { Request, Response } from "express";
 import { pool } from "../database/db";
 import { Cliente } from "../models";
 
-// Cadastro de cliente
-// POST /clientes
+/**
+ * Cadastro de novo cliente.
+ * @route POST /clientes
+ */
 export async function adicionarClientes(req: Request, res: Response) {
   try {
     const {
@@ -48,8 +50,10 @@ export async function adicionarClientes(req: Request, res: Response) {
     }
   }
 
-// Exibe todos os clientes
-// GET /clientes
+/**
+ * Exibe todos os clientes, ativos e inativos.
+ * @route GET /clientes
+ */
 export async function listarClientes(req: Request, res: Response) {
   try {
     const result = await pool.query("SELECT * FROM vw_cliente");
@@ -68,8 +72,11 @@ export async function listarClientes(req: Request, res: Response) {
   }
 }
 
-// Exibe cliente pelo ID
-// GET /clientes/:id
+/**
+ * Exibe detalhes de um cliente específico.
+ * @route GET /clientes/:id
+ * @param {string} req.params.id - ID do cliente para consulta.
+ */
 export async function listarCliente(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
@@ -98,8 +105,10 @@ export async function listarCliente(req: Request, res: Response) {
   }
 }
 
-// Atualiza cliente pelo ID
-// PUT /clientes/:id
+/**
+ * Atualiza os dados cadastrais de um cliente específico.
+ * @route PUT /clientes/:id
+ */
 export async function editarCliente(req: Request, res: Response) {
   try{
     const id = Number(req.params.id);
@@ -133,8 +142,11 @@ export async function editarCliente(req: Request, res: Response) {
    }
   }
 
-// Desativa cliente pelo ID
-// DELETE /clientes/:id
+/**
+ * Desativa um cliente específico.
+ * @route DELETE /clientes/:id
+ * @param {string} req.params.id - ID do cliente a ser desativado.
+ */
 export async function excluirCliente(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
@@ -163,9 +175,12 @@ export async function excluirCliente(req: Request, res: Response) {
   }
 }
 
-// Atualiza permissão de privacidade do Cliente
-// PUT /clientes/:id/privacidade
-// Body: {"permissao_contato_fornecedor": true/false}
+/**
+ * Atualiza a permissão de privacidade do cliente para receber contato de fornecedores.
+ * @route PUT /clientes/:id/privacidade
+ * @param {string} req.params.id - ID do cliente.
+ * @param {boolean} req.body.permissao_contato_fornecedor - permissão do cliente para compartilhar informações com fornecedores.
+ */
 export async function privacidadeCliente(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
@@ -195,9 +210,12 @@ export async function privacidadeCliente(req: Request, res: Response) {
   }
 }
 
-// Atualiza status do benefício Vale Gás do cliente
-// PUT /clientes/:id/vale-gas
-// Body: {"vale_gas_ativo": true/false}
+/**
+ * Atualiza o status de autodeclaração do cliente em possuir benefício de Vale Gás.
+ * @route PUT /clientes/:id/vale-gas
+ * @param {string} req.params.id - ID do cliente.
+ * @param {boolean} req.body.vale_gas_ativo
+ */
 export async function valeGasCliente(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
@@ -227,8 +245,10 @@ export async function valeGasCliente(req: Request, res: Response) {
   }
 }
 
-// Cadastro de endereço do cliente
-// POST /clientes/:id/enderecos
+/**
+ * Cadastra o endereço de um cliente específico.
+ * @route POST /clientes/:id/enderecos
+ */
 export async function adicionarEnderecoCliente(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
@@ -260,8 +280,11 @@ export async function adicionarEnderecoCliente(req: Request, res: Response) {
   }
 }
 
-// Exibe todos os endereços do cliente pelo ID
-// GET /clientes/:id/enderecos
+/**
+ * Exibe todos os endereços vinculados a um cliente específico.
+ * @route GET /clientes/:id/enderecos
+ * @param {string} req.params.id - ID do cliente.
+ */
 export async function visualizarEnderecoCliente(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
@@ -291,8 +314,11 @@ export async function visualizarEnderecoCliente(req: Request, res: Response) {
   }
 }
 
-// Exibe todos os endereços ativos do cliente pelo ID
-// GET /clientes/:id/enderecos-ativos
+/**
+ * Exibe apenas os endereços ativos de um cliente específico.
+ * @route GET /clientes/:id/enderecos-ativos
+ * @param {string} req.params.id - ID do cliente.
+ */
 export async function visualizarEnderecosAtivosCliente(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
@@ -321,8 +347,10 @@ export async function visualizarEnderecosAtivosCliente(req: Request, res: Respon
   }
 }
 
-// Edição de endereço do cliente
-// PUT /clientes/:id/enderecos/:id_endereco
+/**
+ * Edita endereço existente de um cliente específico.
+ * @route PUT /clientes/:id/enderecos/:id_endereco
+ */
 export async function editarEnderecoCliente(req: Request, res: Response) {
   try {
     const id_cliente = Number(req.params.id);
@@ -362,8 +390,12 @@ export async function editarEnderecoCliente(req: Request, res: Response) {
   }
 }
 
-// Desativa endereços de cliente pelo ID
-// DELETE /clientes/:id/enderecos/:id_endereco
+/**
+ * Desativa um endereço de um cliente específico.
+ * @route DELETE /clientes/:id/enderecos/:id_endereco
+ * @param {string} req.params.id - ID do cliente.
+ * @param {string} req.params.id_endereco - ID do endereço a ser desativado.
+ */
 export async function excluirEnderecoCliente(req: Request, res: Response) {
   try {
     const id_cliente = Number(req.params.id);

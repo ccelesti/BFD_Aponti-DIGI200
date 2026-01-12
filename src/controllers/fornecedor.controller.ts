@@ -2,8 +2,10 @@ import { Request, Response } from "express";
 import { pool } from "../database/db";
 import { Fornecedor } from "../models";
 
-// Cadastro de fornecedor
-// POST /fornecedores
+/**
+ * Cadastro de um novo fornecedor.
+ * @route POST /fornecedores
+ */
 export async function adicionarFornecedor(req: Request, res: Response) {
   try {
     const {
@@ -48,8 +50,10 @@ export async function adicionarFornecedor(req: Request, res: Response) {
     }
   }
 
-// Exibe todos os fornecedores
-// GET /fornecedores
+/**
+ * Exibe todos os fornecedores cadastrados.
+ * @route GET /fornecedores
+ */
 export async function listarFornecedores(req: Request, res: Response) {
   try {
     const result = await pool.query("SELECT * FROM vw_Fornecedor");
@@ -68,8 +72,11 @@ export async function listarFornecedores(req: Request, res: Response) {
   }
 }
 
-// Exibe fornecedor pelo ID
-// GET /fornecedores/:id
+/**
+ * Exibe detalhes de um fornecedor específico.
+ * @route GET /fornecedores/:id
+ * @param {string} req.params.id - ID do fornecedor.
+ */
 export async function listarFornecedor(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
@@ -98,8 +105,10 @@ export async function listarFornecedor(req: Request, res: Response) {
   }
 }
 
-// Atualiza fornecedor pelo ID
-// PUT /fornecedores/:id
+/**
+ * Atualiza os dados de um fornecedor específico.
+ * @route PUT /fornecedores/:id
+ */
 export async function editarFornecedor(req: Request, res: Response) {
   try{
     const id = Number(req.params.id);
@@ -133,9 +142,11 @@ export async function editarFornecedor(req: Request, res: Response) {
    }
   }
 
-
-// Desativa fornecedor pelo ID
-// DELETE /fornecedores/:id
+/**
+ * Desativa um fornecedor específico.
+ * @route DELETE /fornecedores/:id
+ * @param {string} req.params.id - ID do fornecedor a ser desativado.
+ */
 export async function excluirFornecedor(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
