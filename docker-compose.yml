@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    container_name: bfd_postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: bfd_database
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./beck-end/scripts/schema.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: ./beck-end      
+    container_name: bfd_api
+    ports:
+      - "3000:3000"
+    environment:
+    
+      DATABASE_URL: "postgresql://admin:123@db:5432/bfd_database"
+    depends_on:
+      - db                 
+
+  nodered:
+    image: nodered/node-red
+    container_name: bfd_nodered
+    ports:
+      - "1880:1880"
+    volumes:
+      - ./iot-simulator:/data
+
+volumes:
+  pgdata:
