@@ -5,7 +5,7 @@ interface ResultadoValidacao {
 }
 
 // 1. Auxiliar: Remove tudo que não for número (limpa pontos, traços e barras)
-export class validador {
+export class Validador {
 private static apenasNumeros(valor: any): string{
     if (typeof valor !== 'string') return "";
     return valor.replace(/\D/g, '');
@@ -54,13 +54,13 @@ static validarFornecedor(dados: any): ResultadoValidacao {
     const erros: string[] = [];
 
     const erroNomeFornecedor = this.validarTexto("O Nome do Fornecedor", dados.nome);
-    const erroCnpj = this.validarCNPJ("O CNPJ", dados.cnpj);
+    const erroCnpj = this.validarCNPJ(dados.cnpj);
     const erroEnderecoFornecedor = this.validarTexto("O Endereço", dados.endereco, 5);
 
     return {valido: erros.length ===0, erros};
 }
 
 }
-/*
+
 const teste = Validador.validarFornecedor({ nome: "Empresa X", cnpj: "123", endereco: "Rua" });
 console.log(teste); // Deve retornar valido: false e a lista de erros de dígitos e tamanho.
