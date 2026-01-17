@@ -1,0 +1,36 @@
+/**
+ * Node-RED settings (EXAMPLE)
+ * Copy to `settings.js` before running.
+ */
+
+module.exports = {
+  // Porta do Node-RED
+  uiPort: process.env.NODE_RED_PORT || 1880,
+
+  // Diretório de dados
+  userDir: "/data",
+
+  // Exemplo de variável de ambiente
+  apiBaseUrl: process.env.API_BASE_URL || "http://localhost:3000",
+
+  // Exemplo de auth (comentado)
+  /*
+  adminAuth: {
+    type: "credentials",
+    users: [{
+      username: "admin",
+      password: "$2b$08$hash_aqui",
+      permissions: "*"
+    }]
+  }
+  */
+
+  // Logs
+  logging: {
+    console: {
+      level: "info",
+      metrics: false,
+      audit: false
+    }
+  }
+};

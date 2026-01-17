@@ -5,11 +5,11 @@ services:
     image: postgres:16
     container_name: bfd_postgres
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 123
-      POSTGRES_DB: bfd_database
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
     volumes:
       - ./beck-end/scripts/schema.sql:/docker-entrypoint-initdb.d/init.sql
       - pgdata:/var/lib/postgresql/data
@@ -18,10 +18,10 @@ services:
     build: ./beck-end      
     container_name: bfd_api
     ports:
-      - "3000:3000"
+      - "${API_PORT}:3000"
     environment:
     
-      DATABASE_URL: "postgresql://admin:123@db:5432/bfd_database"
+      DATABASE_URL: ${DATABASE_URL}
     depends_on:
       - db                 
 
@@ -29,7 +29,7 @@ services:
     image: nodered/node-red
     container_name: bfd_nodered
     ports:
-      - "1880:1880"
+      - "${NODE_RED_PORT}:1880"
     volumes:
       - ./iot-simulator:/data
 
