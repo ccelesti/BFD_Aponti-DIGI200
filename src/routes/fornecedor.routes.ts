@@ -18,4 +18,8 @@ router.get("/:id", fornecedor.listarFornecedor);
 router.put("/:id", fornecedor.editarFornecedor);
 router.delete("/:id", fornecedor.excluirFornecedor);
 
+// Horário de funcionamento
+router.post("/:id/horarios", fornecedor.adicionarHorarioFuncionamento);
+router.put("/:id/horarios" , fornecedor.alterarHorarioFuncionamento);
+
 export default router;
