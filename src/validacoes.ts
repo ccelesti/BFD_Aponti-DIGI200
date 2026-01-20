@@ -1,114 +1,146 @@
-// Interface para padronizar a resposta de erro
-console.log('\nvalidacoes.ts carregado!\n');
+import { Cliente, Fornecedor, Endereco, Bairro } from "./models";
+
+// 1. Interface DTO (Data Transfer Object) para unir as informações
+export interface ClienteCompletoDTO {
+    cliente: Cliente;
+    endereco: Endereco;
+    bairro: Bairro;
+}
+
 interface ResultadoValidacao {
-  valido: boolean;
-  erros: string[];
+    valido: boolean;
+    erros: string[];
 }
 
-// 1. Auxiliar: Remove tudo que não for número (limpa pontos, traços e barras)
 export class Validador {
-private static apenasNumeros(valor: any): string{
-   // console.log('\nvalidacoes.ts carregado!');
-    if (typeof valor !== 'string') return "";
-    return valor.replace(/\D/g, '');
-}
+    // --- MÉTODOS AUXILIARES (PRIVADOS) ---
+    private static apenasNumeros(valor: any): string {
+        if (typeof valor !== 'string') return "";
+        return valor.replace(/\D/g, '');
+    }
 
-// 2. Validação de Texto Simples (Nome, Bairro, Endereço)
-private static validarTexto (campo: string, valor: any, min: number = 3): string | null {
-    const valorExibido = campo.toLowerCase().includes('senha') ? '********' : valor;
-    console.log(`validando texto: "${campo}" = "${valorExibido}"`);
-    if (typeof valor !== 'string') return `O Campo ${campo} deve ser um texto.`;
-    if (valor.trim().length < min) return `O Campo ${campo} deve ter no minímo ${min} Caracteres`;
-    return null;
-}
+    private static validarTexto(campo: string, valor: any, min: number = 3): string | null {
+        if (!valor || typeof valor !== 'string') return `O Campo ${campo} é obrigatório e deve ser um texto.`;
+        if (valor.trim().length < min) return `O Campo ${campo} deve ter no mínimo ${min} caracteres.`;
+        return null;
+    }
 
-// 3. Validação de CPF (11 dígitos)
-private static validarCPF(cpf: any): string | null {
-    console.log('validando CPF:', cpf);
-    const numeros = this.apenasNumeros(cpf);
-    console.log('Números CPF:', numeros, 'length', numeros.length);
-    if (numeros.length !== 11) {
-         console.log('Erro CPF:', 'Deve ter 11 dígitos'); 
-        return 'O CPF deve ter exatamente 11 dígitos numéricos.';
-    }return null;
-}
+    private static validarCPF(cpf: any): string | null {
+        const numeros = this.apenasNumeros(cpf);
+        return numeros.length === 11 ? null : 'O CPF deve ter 11 dígitos.';
+    }
 
-// 4 Validação de CNPJ (14 dígitos)
-private static validarCNPJ(cnpj: any): string | null {
-    console.log('validando CNPJ:', cnpj);
-    const numeros = this.apenasNumeros(cnpj);
-    console.log('números CNPJ:', numeros, 'length:', numeros.length);
-    if (numeros.length !== 14) {
-        console.log('ERRO CNPJ:', 'Deve ter 14 dígitos');
-        return 'O CNPJ deve conter exatamente 14 dígitos numéricos.';
-    }return null;
-}
+    private static validarCNPJ(cnpj: any): string | null {
+        const numeros = this.apenasNumeros(cnpj);
+        return numeros.length === 14 ? null : 'O CNPJ deve ter 14 dígitos.';
+    }
 
-// --- VALIDAÇÃO DE CLIENTE ---
-static validarCliente(dados: any): ResultadoValidacao {
-    const erros: string [] = [];
-    
-    const erroNome = this.validarTexto("Nome do Cliente", dados.nome);
-    const erroCpf = this.validarCPF(dados.cpf);
-    const erroEndereco = this.validarTexto("Endereço", dados.endereco, 5);
-    const erroBairro = this.validarTexto("Bairro", dados.bairro, 2);
-    
-    if (erroNome) erros.push(erroNome);
-    if (erroCpf) erros.push(erroCpf);
-    if (erroEndereco) erros.push(erroEndereco);
-    if (erroBairro) erros.push(erroBairro);
-    
-    return {valido: erros.length === 0, erros };
-}
+    private static validarSenha(senha: any): string | null {
+    if(!senha || typeof senha !== 'string') return "A senha é obrigatória.";
+    if(senha.length != 8) {
+    return "A senha deve ter exatamente 8 caracteres.";
+} return null;
+    }
 
-// --- VALIDAÇÃO DE FORNECEDOR ---
-static validarFornecedor(dados: any): ResultadoValidacao {
-    const erros: string[] = [];
+    private static validarEmail(email: any): string | null {
+        if (!email || typeof email !== 'string') return "O e-mail é obrigatório.";
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return "O E-mail informado é inválido (ex: usuario@dominio.com).";
+        }
+        return null;
+    }
 
-    const erroNomeFornecedor = this.validarTexto("O Nome do Fornecedor", dados.nome);
-    if (erroNomeFornecedor) erros.push(erroNomeFornecedor);
+    // Ajuste: Agora aceita um parâmetro para definir se é obrigatório (padrão sim)
+    private static validarTelefone(campo: string, valor: any, obrigatorio: boolean = true): string | null {
+        if (!obrigatorio && (!valor || valor.toString().trim() === "")) return null;
+        if (obrigatorio && !valor) return `O campo ${campo} é obrigatório.`;
 
-    const erroCnpj = this.validarCNPJ(dados.cnpj);
-    if (erroCnpj) erros.push(erroCnpj);
+        const numeros = this.apenasNumeros(valor);
+        return numeros.length >= 10 && numeros.length <= 11 ? null : `O ${campo} deve ter 10 ou 11 dígitos (com DDD).`;
+    }
 
-    const erroRazao = this.validarTexto('Razão Social', dados.razaoSocial);
-    if (erroRazao) erros.push(erroRazao);
+    // --- 2. VALIDAÇÃO DE BAIRRO ---
+    static validarBairro(dados: Bairro): ResultadoValidacao {
+        const erros: string[] = [];
+        const eBairro = this.validarTexto("Nome do Bairro", dados.nome_bairro, 2);
+        const eMunicipio = this.validarTexto("Município", dados.municipio, 3);
+        const eEstado = this.validarTexto("Estado (UF)", dados.estado, 2);
 
-    const erroEmail = this.validarTexto('E-mail', dados.email);
-    if (erroEmail) erros.push(erroEmail);
+        if (eBairro) erros.push(eBairro);
+        if (eMunicipio) erros.push(eMunicipio);
+        if (eEstado) erros.push(eEstado);
 
-    const erroWhatsapp = this.validarTelefone('Whatsapp',dados.whatsapp);
-    if (erroWhatsapp) erros.push(erroWhatsapp);
+        return { valido: erros.length === 0, erros };
+    }
 
-    const erroTelefone = this.validarTelefone('Telefone',dados.telefone);
-    if (erroTelefone) erros.push(erroTelefone);
+    // --- 3. VALIDAÇÃO DE ENDEREÇO ---
+    static validarEndereco(dados: Endereco): ResultadoValidacao {
+        let erros: string[] = [];
+        const e1 = this.validarTexto("Logradouro", dados.endereco_logradouro, 5);
+        const e2 = this.validarTexto("CEP", dados.cep, 8);
+        
+        if (e1) erros.push(e1);
+        if (e2) erros.push(e2);
 
-    const erroRua = this.validarTexto('Rua', dados.rua);
-    if (erroRua) erros.push(erroRua);
+        return { valido: erros.length === 0, erros };
+    }
 
-    const erroBairro = this.validarTexto('Bairro', dados.bairro, 2);
-    if (erroBairro) erros.push(erroBairro);
+    // --- 4. MÉTODO MESTRE: VALIDAÇÃO UNIFICADA (As 3 Tabelas) ---
+    static validarRegistroCompleto(dados: ClienteCompletoDTO): ResultadoValidacao {
+        let todosErros: string[] = [];
 
-    const erroCidade = this.validarTexto('Cidade', dados.cidade);
-    if (erroCidade) erros.push(erroCidade);
+        // Chama as validações específicas e concatena os erros
+        const resCliente = this.validarCliente(dados.cliente);
+        const resEndereco = this.validarEndereco(dados.endereco);
+        const resBairro = this.validarBairro(dados.bairro);
 
-    const erroSenha = this.validarTexto('Senha', dados.senha)
-    if (erroSenha) erros.push(erroSenha);
-    return {valido: erros.length ===0, erros};
-}
+        if (!resCliente.valido) todosErros = todosErros.concat(resCliente.erros);
+        if (!resEndereco.valido) todosErros = todosErros.concat(resEndereco.erros);
+        if (!resBairro.valido) todosErros = todosErros.concat(resBairro.erros);
 
-// 5. Validação de Telefone/WhatsApp (DDD + 9 dígitos = 11 números)
-private static validarTelefone(campo: string, valor: any): string | null {
-    if(!valor) return `O campo ${campo} é obrigatório.`;
-    
-    // Limpa a string deixando apenas números
-    const numeros = this.apenasNumeros(valor);
-    //console.log(`validando ${campo}: "${valor}" -> números: ${numeros} (tamanho: ${numeros.length})`);
-    
-    console.log(`validando campo ${campo}:`, valor);
-    if (numeros.length !== 11) {
-        return `O campo ${campo} deve ter exatamente 11 dígitos (DDD + número).`;
-    }return null;
-}
+        return {
+            valido: todosErros.length === 0,
+            erros: todosErros
+        };
+    }
 
+    // --- 5. VALIDAÇÃO DE CLIENTE ---
+    static validarCliente(dados: Cliente): ResultadoValidacao {
+        let erros: string[] = [];
+        
+        const e1 = this.validarTexto("Nome", dados.nome);
+        const e2 = this.validarTexto("Sobrenome", dados.sobrenome);
+        const e3 = this.validarCPF(dados.cpf);
+        const e4 = this.validarEmail(dados.email);
+        const e5 = this.validarTelefone("Telefone Principal", dados.telefone_principal, true);
+        const e6 = this.validarTelefone("Telefone Alternativo", dados.telefone_alternativo, false); // Opcional
+        const e7 = this.validarSenha(dados.senha_hash);
+
+        if (e1) erros.push(e1);
+        if (e2) erros.push(e2);
+        if (e3) erros.push(e3);
+        if (e4) erros.push(e4);
+        if (e5) erros.push(e5);
+        if (e6) erros.push(e6);
+        if (e7) erros.push(e7);
+
+        return { valido: erros.length === 0, erros };
+    }
+
+    // --- 6. VALIDAÇÃO DE FORNECEDOR ---
+    static validarFornecedor(dados: Fornecedor): ResultadoValidacao {
+        let erros: string[] = [];
+        const e1 = this.validarTexto("Nome Fantasia", dados.nome_fantasia);
+        const e2 = this.validarTexto("Razão Social", dados.razao_social);
+        const e3 = this.validarCNPJ(dados.cnpj);
+        const e4 = this.validarTelefone("Telefone Principal", dados.telefone_principal);
+
+        if (e1) erros.push(e1);
+        if (e2) erros.push(e2);
+        if (e3) erros.push(e3);
+        if (e4) erros.push(e4);
+
+        return { valido: erros.length === 0, erros };
+    }
 }
