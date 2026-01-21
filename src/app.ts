@@ -1,7 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import routes from "./routes";
-import { Validador, ClienteCompletoDTO } from "./validacoes";
+import { Validador, ClienteCompletoDTO, FornecedorCompletoDTO } from "./validacoes";
+
 
 dotenv.config();
 
@@ -23,7 +24,7 @@ app.listen(port, () => {
     cliente: {
       nome: 'Jackes Luis de',
       sobrenome: 'Martins', // Campo obrigatório corrigido
-      cpf: '123.456.789-01',
+      cpf: '12345678901',
       email: 'pedro@teste.com', // Formato com @ e . corrigido
       telefone_principal: '81.9 9633-5654', // 11 dígitos com DDD
       telefone_alternativo: '', // Opcional, não gera erro se vazio
@@ -67,25 +68,73 @@ app.listen(port, () => {
       console.log(`${index + 1}. ${erro}`);
     });
 
+   
+  };
+  
+const dadosForn: FornecedorCompletoDTO = {
+    fornecedor: {
+        nome_fantasia: 'Distribuidora Alvorada',
+        razao_social: 'Alvorada Alimentos LTDA',
+        cnpj: '123456780199', 
+        email: 'vendasalvorada.com', 
+        telefone_principal: '45678901',
+        telefone_alternativo: '08134329781',
+        senha_hash: '87654'
+    },
+    endereco: {
+        endereco_logradouro: 'Rua Industrial, 500',
+        cep: '54000123', // 8 caracteres exatos
+        id_bairro: 0
+    },
+    bairro: {
+        nome_bairro: 'Jardim Atlântico',
+        municipio: 'Olinda',
+        estado: 'PE'
+    }
+};
+
+const relatorio = Validador.validarFornecedorCompleto(dadosForn);
+
+if (relatorio.valido) {
+    console.log('\n--- 📝 RELATÓRIO DO FORNECEDOR ---');
+    console.log('✅ FORNECEDOR TOTALMENTE VÁLIDO');
+    console.log('-------------------------------------------');
     
-  }
+    // Dados da Empresa (Fornecedor)
+    console.log(`Nome Fantasia: ${dadosForn.fornecedor.nome_fantasia}`);
+    console.log(`Razão Social: ${dadosForn.fornecedor.razao_social}`);
+    console.log(`CNPJ: ${dadosForn.fornecedor.cnpj}`);
+    console.log(`E-mail: ${dadosForn.fornecedor.email}`);
+    console.log(`Telefone Principal: ${dadosForn.fornecedor.telefone_principal}`);
+    
+    // Máscara de Senha (como na imagem do cliente)
+    const senhaMascarada = "*".repeat(dadosForn.fornecedor.senha_hash.length);
+    console.log(`Senha: ${senhaMascarada}`);
+    
+    // Dados de Localização Unificados
+    console.log(`Endereço | Bairro: ${dadosForn.endereco.endereco_logradouro}, ${dadosForn.bairro.nome_bairro}`);
+    console.log(`Cidade | UF: ${dadosForn.bairro.municipio}/${dadosForn.bairro.estado}`);
+    console.log(`CEP: ${dadosForn.endereco.cep}`);
+    
+    // Exibição do Bairro Atendido (se houver)
+    if (dadosForn.bairroAtendido) {
+        console.log(`Área de Atendimento: ${dadosForn.bairroAtendido.nome_bairro}`);
+    }
+    
+    console.log('-------------------------------------------');
+} else {
+    console.log('\n❌ ERRO NA VALIDAÇÃO DO FORNECEDOR:');
+    relatorio.erros.forEach((erro, index) => {
+        console.log(`${index + 1}. ${erro}`); // Aqui resolve a "soma" numerada
+    });
+}
 
 
-    /*
-    //const resultaoFornecdor = Validador.validarFornecedor(dados)
+  
 
-console.log(Validador.validarFornecedor({
-  razao_social: 'Almir Slan',
-  nome_fantasia: `Casas Bahia`,
-  cnpj: `62.326.348/0001-11`,
-  email: 'contato@bahia.com',
-  telefone_principal: '81996335654',
-  telefone_alternativo: '81934329781',
-  rua: 'Rua Do Conhecimento',
-  bairro: 'Casa Amarela',
-  cidade: 'Olinda',
-  senha: '123fgtr'
-})
 
-);
-*/
+    
+    
+
+
+
