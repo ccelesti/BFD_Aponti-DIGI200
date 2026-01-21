@@ -1,0 +1,360 @@
+[
+    {
+        "id": "ed92b1b71e656011",
+        "type": "tab",
+        "label": "Fluxo 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7f24de0689b837af",
+        "type": "websocket-listener",
+        "path": "http:localhost:3001/sensores",
+        "wholemsg": "false"
+    },
+    {
+        "id": "c364f78eb11115a2",
+        "type": "websocket-client",
+        "path": "http://localhost:3001/sensores",
+        "tls": "",
+        "wholemsg": "false",
+        "hb": "",
+        "subprotocol": "http",
+        "headers": [
+            {
+                "keyType": "other",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": ""
+            }
+        ]
+    },
+    {
+        "id": "24910b238294dc6c",
+        "type": "function",
+        "z": "ed92b1b71e656011",
+        "name": "triagem_de_nivel",
+        "func": "let msg_erro_triagem_nivel;\ntry {\n    let db_local = global.get(\"data_base_local\") || {};\n    let id_sensor = msg.miniDB._id_sensor\n    msg.miniDB._nivel_gas = db_local[id_sensor].nivel_gas\n    \n    if (!msg.miniDB._nivel_gas ){\n        msg.triagens = \"2\";\n        return msg;\n\n    }else if(msg.miniDB._nivel_gas <= 1300 && msg.miniDB._nivel_gas > 0){\n        msg.miniDB._status_cliente = \"Ok\";\n        msg.triagens = \"3\";\n        return msg;\n\n    }else {\n        throw new Error (\"Nível do gás está incorreto\");\n        \n    }\n}catch (error){\n    msg_erro_triagem_nivel = error.message ;\n    //node.error(msg_erro_triagem_nivel, msg);\n    msg.error = true;\n    \n    return msg;\n}\n\n\n\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 320,
+        "wires": [
+            [
+                "36129f8ee62dd7da"
+            ]
+        ]
+    },
+    {
+        "id": "8c23c37c921a2e93",
+        "type": "inject",
+        "z": "ed92b1b71e656011",
+        "d": true,
+        "name": "Insercao",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "v": "\"a\"",
+                "vt": "msg"
+            },
+            {
+                "p": "miniDB",
+                "v": "{\"miniDB\":{\"_id_sensor\":0,\"_nivel_gas\":0,\"_status_cliente\":\"\",\"_hora_medicao\":\"\"}}",
+                "vt": "json"
+            },
+            {
+                "p": "triagens",
+                "v": "\"a\"",
+                "vt": "str"
+            }
+        ],
+        "repeat": "20",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 80,
+        "y": 320,
+        "wires": [
+            [
+                "a8baffcecdb3447d"
+            ]
+        ]
+    },
+    {
+        "id": "2b72f97ffc46d85d",
+        "type": "http request",
+        "z": "ed92b1b71e656011",
+        "name": "cadastro_sensor",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "body",
+        "url": "http:localhost:3001/sensor/:id/cadastrarNovoSensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [
+            {
+                "keyType": "other",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "req.params.id_sensor"
+            }
+        ],
+        "x": 900,
+        "y": 240,
+        "wires": [
+            [
+                "1246084608cb48a5"
+            ]
+        ]
+    },
+    {
+        "id": "36129f8ee62dd7da",
+        "type": "switch",
+        "z": "ed92b1b71e656011",
+        "name": "triagem",
+        "property": "triagens",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "3",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 680,
+        "y": 320,
+        "wires": [
+            [
+                "2b72f97ffc46d85d"
+            ],
+            [
+                "2a4433ccd2de66c3"
+            ],
+            [
+                "3945c630c07d35c6"
+            ]
+        ]
+    },
+    {
+        "id": "c669191ef5230198",
+        "type": "function",
+        "z": "ed92b1b71e656011",
+        "name": "atualizacao_nivel_gas",
+        "func": "\ntry {\n    let id_sensor = msg.miniDB._id_sensor;\n    let novo_nivel_gas = msg.miniDB._nivel_gas;\n    let db_local = global.get(\"data_base_local\");\n\n    \n    if (msg.triagens === \"1\"){\n        novo_nivel_gas -= 400;\n        msg.miniDB._nivel_gas = novo_nivel_gas;\n        \n        return msg\n\n    }else if ( msg.triagens == \"2\"){\n        let nivel_gas_zerado = 1300;\n        msg.miniDB._nivel_gas = nivel_gas_zerado;\n        msg.miniDB._status_cliente = \"Reiniciado\";\n\n        return msg\n\n    }\n}catch(error){\n    \n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1520,
+        "y": 420,
+        "wires": [
+            [
+                "f1147a229d0cc3eb"
+            ]
+        ]
+    },
+    {
+        "id": "2a4433ccd2de66c3",
+        "type": "http request",
+        "z": "ed92b1b71e656011",
+        "name": "ler_status_sensor",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://sensor/:id/reinicializarSensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 910,
+        "y": 320,
+        "wires": [
+            [
+                "3546588aa1fe3893"
+            ]
+        ]
+    },
+    {
+        "id": "8b4ab5134c5a137b",
+        "type": "function",
+        "z": "ed92b1b71e656011",
+        "name": "modificar_valores_recebidos",
+        "func": "let id_sensor = msg.miniDB._id_sensor;\nlet db_local = global.get(\"data_base_local\") || {};\n\ndb_local[id_sensor] = {\n    \"id_sensor\":msg.miniDB._id_sensor,\n    \"nivel_gas\":msg.miniDB._nivel_gas,\n    \"status_cliente\": msg.miniDB._status_cliente,\n    \"hora_da_medicao\": new Date().toLocaleTimeString()\n};\n\nglobal.set(\"data_base_local\", db_local);\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1340,
+        "y": 240,
+        "wires": [
+            [
+                "3945c630c07d35c6"
+            ]
+        ]
+    },
+    {
+        "id": "3945c630c07d35c6",
+        "type": "function",
+        "z": "ed92b1b71e656011",
+        "name": "triagem_de_status",
+        "func": "let msg_erro_triagem_status\ntry{\n\n    let status_do_cliente = msg.miniDB._status_cliente;\n    \n    if (status_do_cliente === \"Ok\"){\n        msg.triagens = \"1\"\n        return msg\n    }else if (status_do_cliente === \"Renovado\" || status_do_cliente === \"Iniciado\"){\n        msg.triagens = \"2\"\n        return msg\n    }\n    else if (status_do_cliente === \"Em espera\"){\n        msg.triagens = \"3\"\n        return msg\n    }else {\n        throw new Error (\"Erro na triagem de status\");\n    }\n}catch(error){\n    msg_erro_triagem_status = error.message ;\n    node.error(msg_erro_triagem_status, msg);\n\n    msg.error = true;\n    return msg;\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1270,
+        "y": 420,
+        "wires": [
+            [
+                "c669191ef5230198"
+            ]
+        ]
+    },
+    {
+        "id": "a8baffcecdb3447d",
+        "type": "function",
+        "z": "ed92b1b71e656011",
+        "name": "triagem_registro_local",
+        "func": "let msg_erro_triagem_registro;\ntry {\n    let id_sensor = msg.miniDB._id_sensor;\n\n    let db_local = global.get(\"data_base_local\") || {};\n    let registroExistente = db_local[id_sensor];\n    if (registroExistente){\n        return msg;\n    }\n    else if (!registroExistente){\n        msg.triagens = \"1\"\n        return msg;\n    }\n    else {\n        throw new Error (\"Erro na triagem de registros\");\n    }\n    }catch (error){\n        msg_erro_triagem_registro = error.message ;\n        //node.error(msg_erro_triagem_nivel, msg);\n        msg.error = true;\n        \n        return msg;\n    }\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 320,
+        "wires": [
+            [
+                "24910b238294dc6c"
+            ]
+        ]
+    },
+    {
+        "id": "f1147a229d0cc3eb",
+        "type": "function",
+        "z": "ed92b1b71e656011",
+        "name": "atualizaco_bdLocal_e_deploy",
+        "func": "let db_local = global.get (\"data_base_local\");\n\ndb_local[msg.miniDB._id_sensor] = {\n    \"id_sensor\": msg.miniDB._id_sensor,\n    \"nivel_gas\": msg.miniDB._nivel_gas,\n    \"status_cliente\": msg.miniDB._status_cliente,\n    \"hora_medicao\": new Date().toLocaleTimeString()\n}\nglobal.set(\"data_base_local\", db_local);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1790,
+        "y": 420,
+        "wires": [
+            [
+                "a2a70f3e7f5c9bc4"
+            ]
+        ]
+    },
+    {
+        "id": "a2a70f3e7f5c9bc4",
+        "type": "json",
+        "z": "ed92b1b71e656011",
+        "name": "criar_json",
+        "property": "miniDB",
+        "action": "",
+        "pretty": false,
+        "x": 2040,
+        "y": 420,
+        "wires": [
+            [
+                "8510e25cbf568dde"
+            ]
+        ]
+    },
+    {
+        "id": "8510e25cbf568dde",
+        "type": "http request",
+        "z": "ed92b1b71e656011",
+        "name": "deploy",
+        "method": "PUT",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http:localhost:3001/sensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 2210,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1246084608cb48a5",
+        "type": "json",
+        "z": "ed92b1b71e656011",
+        "name": "cadastro_sensor",
+        "property": "miniDB",
+        "action": "",
+        "pretty": false,
+        "x": 1100,
+        "y": 240,
+        "wires": [
+            [
+                "8b4ab5134c5a137b"
+            ]
+        ]
+    },
+    {
+        "id": "3546588aa1fe3893",
+        "type": "json",
+        "z": "ed92b1b71e656011",
+        "name": "status_atualização",
+        "property": "miniBD",
+        "action": "",
+        "pretty": false,
+        "x": 1110,
+        "y": 320,
+        "wires": [
+            [
+                "3945c630c07d35c6"
+            ]
+        ]
+    }
+]
