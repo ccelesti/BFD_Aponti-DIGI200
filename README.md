@@ -2,16 +2,15 @@
   <img src="./src/assets/Logo/BotijON.png" alt="BotijON Logo" width="500">
 </div>
 
-
 # BotijON • Sistema de Gerenciamento e Alerta de Gás
-### Bolsa Futuro Digital (Softex / Aponti) — Equipe DIGI-200
+### Bolsa Futuro Digital (Aponti) — Equipe DIGI-200
 
 <br>
 
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)   [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)   [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)   [![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)   [![License](https://img.shields.io/badge/License-MIT-red.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)   [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)   [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)   [![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)   [![License](https://img.shields.io/badge/License-MIT-red.svg)](LICENSE)    
 
 ## 📝 Descrição Geral
-O **BotijON** faz parte do _Projeto Integrador_ desenvolvido no contexto do programa [*Bolsa Futuro Digital*](https://aponti.org.br/capital-humano#programa-bfd) (Softex / [*Aponti*](https://aponti.org.br/) - Recife)**, como atividade de culminância da formação, pela equipe **DIGI-200**, da _Turma 33 PE C1 - Back-end Node.js_.
+O **BotijON** faz parte do _Projeto Integrador_ desenvolvido no contexto do programa **[*Bolsa Futuro Digital*](https://aponti.org.br/capital-humano#programa-bfd)**, promovido pela **[*Aponti - Pernambuco*](https://aponti.org.br/)**, como atividade de culminância da formação, pela equipe **DIGI-200**, da _Turma 33 PE C1 - Back-end Node.js_.
 
 O sistema funciona como uma **API backend**, responsável por simular o monitoramento do consumo de gás de cozinha em uma residência, e atuando como **ponte de comunicação** entre **clientes** e **fornecedores**, com foco em:
 - organização da arquitetura backend;
@@ -87,23 +86,23 @@ Nesse contexto, foram aplicados conhecimentos relacionados a:
 ---
 
 ## 🛠️ Tecnologias Utilizadas
-### Backend
+#### Backend
 - **Node.js** – Ambiente de execução do servidor backend.
 - **Express** – Framework para construção das APIs RESTful.
 - **TypeScript** – Linguagem principal do projeto, garantindo tipagem estática e maior segurança.
 
-### Banco de Dados
+#### Banco de Dados
 - **PostgreSQL** – Banco de dados relacional, utilizado tanto em ambiente local (Docker) quanto em nuvem (Render).
 
-### Simulação IoT
+#### Simulação IoT
 - **Node-RED** – Ferramenta utilizada para simular o sensor de gás, gerando dados mockados que representam o funcionamento de um sensor físico real.
 
-### Infraestrutura
+#### Infraestrutura
 - **Docker** – Conteinerização dos serviços do sistema.
 - **Docker Compose** – Orquestração dos containers para ambiente de desenvolvimento.
 - **Render** – Hospedagem do banco de dados PostgreSQL em nuvem.
 
-### Ferramentas de Qualidade e Suporte
+#### Ferramentas de Qualidade e Suporte
 - **Thunder Client** – Testes rápidos das rotas da API no VS Code.
 - **Postman** – Documentação e validação das rotas.
 - **dotenv** – Gerenciamento de variáveis de ambiente.
@@ -180,7 +179,8 @@ BFD_APONTI-DIGI200/
 └── README.md                     # README do Projeto
 ```
 
-
+## Versão Resumida da Arquitetura
+```bash
 back-end/
 ├── src/
 │   ├── routes/        → Recebe as requisições HTTP e define os endpoints da API
@@ -188,6 +188,7 @@ back-end/
 │   ├── database/      → Configura a conexão com o banco de dados
 │   ├── models.ts      → Define interfaces e tipagens do sistema
 │   └── app.ts         → Inicializa a aplicação e registra middlewares e rotas
+```
 
 ---
 
@@ -267,9 +268,9 @@ docker compose up -d
 ```
 
 Esse comando irá:
--subir o backend;
--inicializar o banco de dados PostgreSQL;
--disponibilizar o ambiente completo para desenvolvimento.
+- Subir o backend;
+- Inicializar o banco de dados PostgreSQL;
+- Disponibilizar o ambiente completo para desenvolvimento.
 
 ---
 
@@ -307,12 +308,16 @@ As rotas podem ser testadas com:
 ## 📄 Licença
 Este projeto está licenciado sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para mais informações.
 
+--- 
+
 ## ✨ Autoria
 Projeto desenvolvido pelo grupo DIGI-200
-Programa Bolsa Futuro Digital – Softex / Aponti
+[*Bolsa Futuro Digital*](https://aponti.org.br/capital-humano#programa-bfd) – [*Aponti*](https://aponti.org.br/)
+
+---
 
 ## 🎓 Programa, Apoio e Formação
-**Bolsa Futuro Digital – Softex/Aponti**  
+**Bolsa Futuro Digital – Aponti**  
 Turma 33 PE C1
 Professora: _Kathlyn Letícia dos Santos_
 Site: https://aponti.org.br/
