@@ -29,4 +29,3 @@ export async function listarBairros(req: Request, res: Response) {
   }
 }
 
-
