@@ -1,7 +1,7 @@
 // import { Router } from "express";
 // import * as controleDoSensor from '../controllers/sensor.controllers';
 
-//router.post("/:id/cadastrarNovoSensor", controleDoSensor.cadastroDeNovoSensor);
+//router.post("/cadastrarNovoSensor", controleDoSensor.cadastroDeNovoSensor);
 //router.put("/:id/leituraNivelSensor", controleDoSensor.leituraNivelSensor);
 //router.put("/:id/reinicializarSensor", controleDoSensor.reinicializarSensor);
 

@@ -81,10 +81,15 @@ export interface BairroAtendidoFornecedor {
 }
 
 // export interface SensorMedicaoGas {
-//   id_medidor?: number;
-//   id_cliente?: number;
-//   nome_endereco_Sensor: string;
-//   status_Sensor: string;
-//   status_iot_cliente: string; 
-//   tipo_gas: string;
+//   id_sensor: number;
+//   id_cliente: number;
+//   id_endereco_Sensor?: string;
+//   status_gas: string;
+//   status_iot_cliente?: string; 
+//   tipo_gas?: string;
+//   data_ultima_leitura?: Date;
+//   nivel_ultima_leitura?: number;
+//   
+//   media_consumo?: number;
+//   
 // }
