@@ -2,7 +2,7 @@
 // import * as controleDoSensor from '../controllers/sensor.controllers';
 
 //router.post("/cadastrarNovoSensor", controleDoSensor.cadastroDeNovoSensor);
-//router.put("/:id/leituraNivelSensor", controleDoSensor.leituraNivelSensor);
+//router.put("/:id/leituraNivelSensor", controleDoSensor.receberLeituraNivelSensor);
 //router.put("/:id/reinicializarSensor", controleDoSensor.reinicializarSensor);
 
 //O sensor manda uma requizição perguntando o estado do cliente. 

@@ -1,11 +1,24 @@
 import { Request, Response } from "express";
-async function mediaConsumoSensor (nivel_leitura_antiga_sensor: number, nivel_leitura_proxima_sensor: number){
-    let mediaConsumo = nivel_leitura_antiga_sensor - nivel_leitura_proxima_sensor; 
+export async function calcularPrevisao (nivel_atual: number, data_ultima_troca: Date){
+    const dia_atual = new Date();
 
+    const diferenca_dias = dia_atual.getTime() - new Date(data_ultima_troca).getTime();
+    const dias_passados = diferenca_dias / (1000 * 60 * 60 * 24);
+    
+    if (dias_passados < 1) return 30;
+
+    const gasto_percentual_gas = 100 - nivel_atual;
+
+    if (gasto_percentual_gas <= 0) return 30;
+
+    const consumo_por_dia_gas = gasto_percentual_gas / dias_passados;
+    
+    const dias_restantes_gas = nivel_atual / consumo_por_dia_gas;
+
+    return Math.floor (dias_restantes_gas);
 
 }
-
-async function verificarStatusNivelGas (nivel_leitura_sensor:number, tipo_gas: string){
+export async function verificarStatusNivelGas (nivel_leitura_sensor:number, tipo_gas: string){
 
    try {
     let gas_peso_max;

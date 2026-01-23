@@ -89,7 +89,13 @@ export interface BairroAtendidoFornecedor {
 //   tipo_gas?: string;
 //   data_ultima_leitura?: Date;
 //   nivel_ultima_leitura?: number;
-//   
 //   media_consumo?: number;
-//   
+//   data_ultima_troca: Date;
+// }
+// export interface LeituraSensor {
+//   id_leitura: number;
+//   id_sensor:number;
+//   nivel_atual: number;
+//   previsao_dias?: number;
+//   data_leitura?: Date;
 // }
