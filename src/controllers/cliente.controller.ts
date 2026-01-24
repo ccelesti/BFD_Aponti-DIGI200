@@ -114,6 +114,7 @@ export async function listarCliente(req: Request, res: Response) {
 /**
  * Atualiza os dados cadastrais de um cliente específico.
  * @route PUT /clientes/:id
+ * @param {string} req.params.id - ID do cliente.
  */
 export async function editarCliente(req: Request, res: Response) {
   try{
@@ -192,7 +193,7 @@ export async function privacidadeCliente(req: Request, res: Response) {
     const id = Number(req.params.id);
     const { permissao_contato_fornecedor } = req.body;
 
-    const result = await pool.query(`UPDATE cliente SET permissao_contato_fornecedor = $1 WHERE id_cliente=$2 RETURNING *;`, [permissao_contato_fornecedor, id]);
+    const result = await pool.query(`UPDATE cliente SET permissao_contato_fornecedor = $1 WHERE id_cliente = $2 RETURNING *;`, [permissao_contato_fornecedor, id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({
@@ -360,8 +361,10 @@ export async function visualizarEnderecosAtivosCliente(req: Request, res: Respon
 }
 
 /**
- * Edita endereço existente de um cliente específico.
+ * Atualiza os dados de endereço existente de um cliente específico.
  * @route PUT /clientes/:id/enderecos/:id_endereco
+ * @param {string} req.params.id - ID do cliente.
+ * @param {string} req.params.id_endereco - ID do endereço.
  */
 export async function editarEnderecoCliente(req: Request, res: Response) {
   try {
@@ -433,6 +436,87 @@ export async function excluirEnderecoCliente(req: Request, res: Response) {
     return res.status(500).json({
       message: "Erro ao excluir endereço de cliente",
       endereco_cliente: null
+    });
+  }
+}
+
+/**
+ * Exibe todos os fornecedores que realizam a entrega no endereço principal de um cliente específico.
+ * @route GET /clientes/:id/fornecedores-recomendados
+ * @param {string} req.params.id_cliente - ID do cliente.
+ */
+export async function listarFornecedoresRecomendados(req: Request, res: Response) {
+  try {
+    const id_cliente = Number(req.params.id);
+
+    const result = await pool.query(`SELECT DISTINCT f.id_fornecedor, f.nome_fantasia, b.nome_bairro FROM endereco_cliente ec JOIN endereco e ON e.id_endereco = ec.id_endereco JOIN bairro b ON b.id_bairro = e.id_bairro JOIN bairro_atendido_fornecedor baf ON baf.id_bairro = b.id_bairro JOIN fornecedor f ON f.id_fornecedor = baf.id_fornecedor WHERE ec.id_cliente = $1 AND ec.endereco_principal = true;`, [id_cliente]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        message: "Nenhum fornecedor atende o bairro do endereço principal deste cliente.",
+        fornecedores: null
+      });
+    }
+
+    return res.status(200).json({
+      message: "Fornecedores recomendados encontrados com sucesso.",
+      fornecedores: result.rows
+    });
+
+  } catch (error) {
+    console.error("Erro ao buscar fornecedores recomendados:", error);
+
+    return res.status(500).json({
+      message: "Erro ao buscar fornecedores recomendados.",
+      fornecedores: null
+    });
+  }
+}
+
+/**
+ * Permite que um cliente visualize os horários de funcionamento de um fornecedor específico (com vínculo ativo).
+ * @route GET /clientes/:id_cliente/fornecedores/:id_fornecedor/horarios
+ * @param {string} req.params.id_cliente - ID do cliente.
+ * @param {string} req.params.id_fornecedor - ID do fornecedor.
+ */
+export async function visualizarHorarioFuncionamentoFornecedor(req: Request, res: Response) {
+  try {
+    const id_cliente = Number(req.params.id_cliente);
+    const id_fornecedor = Number(req.params.id_fornecedor);
+
+    const vinculo = await pool.query(`SELECT 1 FROM cliente_fornecedor WHERE id_cliente = $1 AND id_fornecedor = $2 AND status_vinculo = true`, [id_cliente, id_fornecedor]
+    );
+
+    if (vinculo.rowCount === 0) {
+      return res.status(403).json({
+        message: "Acesso negado. O cliente não possui vínculo ativo com este fornecedor."
+      });
+    }
+
+    const horarios = await pool.query(`SELECT dia_funcionamento, horario_inicio, horario_termino, esta_aberto FROM horario_funcionamento WHERE id_fornecedor = $1 ORDER BY dia_funcionamento`,
+      [id_fornecedor]
+    );
+
+    if (horarios.rowCount === 0) {
+      return res.status(404).json({
+        message: "Nenhum horário de funcionamento cadastrado para este fornecedor.",
+        horarios: []
+      });
+    }
+
+    return res.status(200).json({
+      message: "Horários de funcionamento do fornecedor encontrados com sucesso!",
+      fornecedor: id_fornecedor,
+      horarios: horarios.rows
+    });
+
+  } catch (error) {
+    console.error("Erro ao visualizar horário de funcionamento: ", error);
+
+    return res.status(500).json({
+      message: "Erro ao consultar horário de funcionamento do fornecedor",
+      horarios: null
     });
   }
 }
