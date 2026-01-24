@@ -37,28 +37,28 @@ export async function verificarStatusNivelGas (nivel_leitura_sensor:number, tipo
         }
         //stts: status , niv: nivel;
         const porcent_atual_stts_niv_sensor = (nivel_leitura_sensor/gas_peso_max) * 100;
-        
+        let stts_niv_gas;
         if (porcent_atual_stts_niv_sensor >= 70 && porcent_atual_stts_niv_sensor <= 100){
-            const stts_niv_gas = "Muito Alto";
-            return  stts_niv_gas;
+            stts_niv_gas = "Muito Alto";
         } else if (porcent_atual_stts_niv_sensor < 70 && porcent_atual_stts_niv_sensor >= 50){
-            const stts_niv_gas = "Alto";
-            return stts_niv_gas;
+            stts_niv_gas = "Alto";
         }else if (porcent_atual_stts_niv_sensor < 50 && porcent_atual_stts_niv_sensor >= 30){
-            const stts_niv_gas = "Médio";
-            return stts_niv_gas;
+            stts_niv_gas = "Médio";
         }else if (porcent_atual_stts_niv_sensor < 30 && porcent_atual_stts_niv_sensor >= 15){
-            const stts_niv_gas = "Baixo";
+            stts_niv_gas = "Baixo";
         }else if (porcent_atual_stts_niv_sensor < 15 && porcent_atual_stts_niv_sensor >= 6){
-            const stts_niv_gas = "Muito baixo";
-            return stts_niv_gas;
+            stts_niv_gas = "Muito baixo";
         }else if (porcent_atual_stts_niv_sensor < 6 && porcent_atual_stts_niv_sensor >= 0){
-            const stts_niv_gas = "Urgente";
-            return stts_niv_gas;
+            stts_niv_gas = "Urgente";
         }else {
             throw new Error ("A porcentagem do nivel está incorreta");
         }
+        return {
+            status_nivel_gas: stts_niv_gas
+        }
+        
     }catch(error){
         console.error ("Algo de errado na verficação de status do gás.", error);
     }
 }
+
