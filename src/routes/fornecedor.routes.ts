@@ -22,7 +22,7 @@ router.delete("/:id/areas/:id_bairro", bairroFornecedor.excluirBairroAtendido);
 router.post("/:id/horarios", fornecedor.adicionarHorarioFuncionamento);
 router.get("/:id/horarios", fornecedor.listarHorariosFuncionamento);
 router.put("/:id/horarios", fornecedor.alterarHorarioFuncionamento);
-router.delete("/:id/horarios", fornecedor.removerHorarioFuncionamento);
+router.delete("/:id/horarios/:dia", fornecedor.removerHorarioFuncionamento);
 
 // Permissões do fornecedor
 router.put("/:id/privacidade", fornecedor.privacidadeFornecedor);
