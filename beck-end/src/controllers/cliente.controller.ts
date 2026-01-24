@@ -2,8 +2,10 @@ import { Request, Response } from "express";
 import { pool } from "../database/db";
 import { Cliente } from "../models";
 
-// Cadastro de cliente
-// POST /clientes
+/**
+ * Cadastro de novo cliente.
+ * @route POST /clientes
+ */
 export async function adicionarClientes(req: Request, res: Response) {
   try {
     const {
@@ -48,8 +50,10 @@ export async function adicionarClientes(req: Request, res: Response) {
     }
   }
 
-// Exibe todos os clientes
-// GET /clientes
+/**
+ * Exibe todos os clientes, ativos e inativos.
+ * @route GET /clientes
+ */
 export async function listarClientes(req: Request, res: Response) {
   try {
     const result = await pool.query("SELECT * FROM vw_cliente");
@@ -68,8 +72,11 @@ export async function listarClientes(req: Request, res: Response) {
   }
 }
 
-// Exibe cliente pelo ID
-// GET /clientes/:id
+/**
+ * Exibe detalhes de um cliente específico.
+ * @route GET /clientes/:id
+ * @param {string} req.params.id - ID do cliente para consulta.
+ */
 export async function listarCliente(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
@@ -98,8 +105,11 @@ export async function listarCliente(req: Request, res: Response) {
   }
 }
 
-// Atualiza cliente pelo ID
-// PUT /clientes/:id
+/**
+ * Atualiza os dados cadastrais de um cliente específico.
+ * @route PUT /clientes/:id
+ * @param {string} req.params.id - ID do cliente.
+ */
 export async function editarCliente(req: Request, res: Response) {
   try{
     const id = Number(req.params.id);
@@ -133,8 +143,11 @@ export async function editarCliente(req: Request, res: Response) {
    }
   }
 
-// Desativa cliente pelo ID
-// DELETE /clientes/:id
+/**
+ * Desativa um cliente específico.
+ * @route DELETE /clientes/:id
+ * @param {string} req.params.id - ID do cliente a ser desativado.
+ */
 export async function excluirCliente(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
@@ -163,15 +176,18 @@ export async function excluirCliente(req: Request, res: Response) {
   }
 }
 
-// Atualiza permissão de privacidade do Cliente
-// PUT /clientes/:id/privacidade
-// Body: {"permissao_contato_fornecedor": true/false}
+/**
+ * Atualiza a permissão de privacidade do cliente para receber contato de fornecedores.
+ * @route PUT /clientes/:id/privacidade
+ * @param {string} req.params.id - ID do cliente.
+ * @param {boolean} req.body.permissao_contato_fornecedor - permissão do cliente para compartilhar informações com fornecedores.
+ */
 export async function privacidadeCliente(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
     const { permissao_contato_fornecedor } = req.body;
 
-    const result = await pool.query(`UPDATE cliente SET permissao_contato_fornecedor = $1 WHERE id_cliente=$2 RETURNING *;`, [permissao_contato_fornecedor, id]);
+    const result = await pool.query(`UPDATE cliente SET permissao_contato_fornecedor = $1 WHERE id_cliente = $2 RETURNING *;`, [permissao_contato_fornecedor, id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({
@@ -195,9 +211,12 @@ export async function privacidadeCliente(req: Request, res: Response) {
   }
 }
 
-// Atualiza status do benefício Vale Gás do cliente
-// PUT /clientes/:id/vale-gas
-// Body: {"vale_gas_ativo": true/false}
+/**
+ * Atualiza o status de autodeclaração do cliente em possuir benefício de Vale Gás.
+ * @route PUT /clientes/:id/vale-gas
+ * @param {string} req.params.id - ID do cliente.
+ * @param {boolean} req.body.vale_gas_ativo
+ */
 export async function valeGasCliente(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
@@ -227,8 +246,10 @@ export async function valeGasCliente(req: Request, res: Response) {
   }
 }
 
-// Cadastro de endereço do cliente
-// POST /clientes/:id/enderecos
+/**
+ * Cadastra o endereço de um cliente específico.
+ * @route POST /clientes/:id/enderecos
+ */
 export async function adicionarEnderecoCliente(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
@@ -260,8 +281,11 @@ export async function adicionarEnderecoCliente(req: Request, res: Response) {
   }
 }
 
-// Exibe todos os endereços do cliente pelo ID
-// GET /clientes/:id/enderecos
+/**
+ * Exibe todos os endereços vinculados a um cliente específico.
+ * @route GET /clientes/:id/enderecos
+ * @param {string} req.params.id - ID do cliente.
+ */
 export async function visualizarEnderecoCliente(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
@@ -291,8 +315,11 @@ export async function visualizarEnderecoCliente(req: Request, res: Response) {
   }
 }
 
-// Exibe todos os endereços ativos do cliente pelo ID
-// GET /clientes/:id/enderecos-ativos
+/**
+ * Exibe apenas os endereços ativos de um cliente específico.
+ * @route GET /clientes/:id/enderecos-ativos
+ * @param {string} req.params.id - ID do cliente.
+ */
 export async function visualizarEnderecosAtivosCliente(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
@@ -321,8 +348,12 @@ export async function visualizarEnderecosAtivosCliente(req: Request, res: Respon
   }
 }
 
-// Edição de endereço do cliente
-// PUT /clientes/:id/enderecos/:id_endereco
+/**
+ * Atualiza os dados de endereço existente de um cliente específico.
+ * @route PUT /clientes/:id/enderecos/:id_endereco
+ * @param {string} req.params.id - ID do cliente.
+ * @param {string} req.params.id_endereco - ID do endereço.
+ */
 export async function editarEnderecoCliente(req: Request, res: Response) {
   try {
     const id_cliente = Number(req.params.id);
@@ -362,8 +393,12 @@ export async function editarEnderecoCliente(req: Request, res: Response) {
   }
 }
 
-// Desativa endereços de cliente pelo ID
-// DELETE /clientes/:id/enderecos/:id_endereco
+/**
+ * Desativa um endereço de um cliente específico.
+ * @route DELETE /clientes/:id/enderecos/:id_endereco
+ * @param {string} req.params.id - ID do cliente.
+ * @param {string} req.params.id_endereco - ID do endereço a ser desativado.
+ */
 export async function excluirEnderecoCliente(req: Request, res: Response) {
   try {
     const id_cliente = Number(req.params.id);
@@ -389,6 +424,87 @@ export async function excluirEnderecoCliente(req: Request, res: Response) {
     return res.status(500).json({
       message: "Erro ao excluir endereço de cliente",
       endereco_cliente: null
+    });
+  }
+}
+
+/**
+ * Exibe todos os fornecedores que realizam a entrega no endereço principal de um cliente específico.
+ * @route GET /clientes/:id/fornecedores-recomendados
+ * @param {string} req.params.id_cliente - ID do cliente.
+ */
+export async function listarFornecedoresRecomendados(req: Request, res: Response) {
+  try {
+    const id_cliente = Number(req.params.id);
+
+    const result = await pool.query(`SELECT DISTINCT f.id_fornecedor, f.nome_fantasia, b.nome_bairro FROM endereco_cliente ec JOIN endereco e ON e.id_endereco = ec.id_endereco JOIN bairro b ON b.id_bairro = e.id_bairro JOIN bairro_atendido_fornecedor baf ON baf.id_bairro = b.id_bairro JOIN fornecedor f ON f.id_fornecedor = baf.id_fornecedor WHERE ec.id_cliente = $1 AND ec.endereco_principal = true;`, [id_cliente]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        message: "Nenhum fornecedor atende o bairro do endereço principal deste cliente.",
+        fornecedores: null
+      });
+    }
+
+    return res.status(200).json({
+      message: "Fornecedores recomendados encontrados com sucesso.",
+      fornecedores: result.rows
+    });
+
+  } catch (error) {
+    console.error("Erro ao buscar fornecedores recomendados:", error);
+
+    return res.status(500).json({
+      message: "Erro ao buscar fornecedores recomendados.",
+      fornecedores: null
+    });
+  }
+}
+
+/**
+ * Permite que um cliente visualize os horários de funcionamento de um fornecedor específico (com vínculo ativo).
+ * @route GET /clientes/:id_cliente/fornecedores/:id_fornecedor/horarios
+ * @param {string} req.params.id_cliente - ID do cliente.
+ * @param {string} req.params.id_fornecedor - ID do fornecedor.
+ */
+export async function visualizarHorarioFuncionamentoFornecedor(req: Request, res: Response) {
+  try {
+    const id_cliente = Number(req.params.id_cliente);
+    const id_fornecedor = Number(req.params.id_fornecedor);
+
+    const vinculo = await pool.query(`SELECT 1 FROM cliente_fornecedor WHERE id_cliente = $1 AND id_fornecedor = $2 AND status_vinculo = true`, [id_cliente, id_fornecedor]
+    );
+
+    if (vinculo.rowCount === 0) {
+      return res.status(403).json({
+        message: "Acesso negado. O cliente não possui vínculo ativo com este fornecedor."
+      });
+    }
+
+    const horarios = await pool.query(`SELECT dia_funcionamento, horario_inicio, horario_termino, esta_aberto FROM horario_funcionamento WHERE id_fornecedor = $1 ORDER BY dia_funcionamento`,
+      [id_fornecedor]
+    );
+
+    if (horarios.rowCount === 0) {
+      return res.status(404).json({
+        message: "Nenhum horário de funcionamento cadastrado para este fornecedor.",
+        horarios: []
+      });
+    }
+
+    return res.status(200).json({
+      message: "Horários de funcionamento do fornecedor encontrados com sucesso!",
+      fornecedor: id_fornecedor,
+      horarios: horarios.rows
+    });
+
+  } catch (error) {
+    console.error("Erro ao visualizar horário de funcionamento: ", error);
+
+    return res.status(500).json({
+      message: "Erro ao consultar horário de funcionamento do fornecedor",
+      horarios: null
     });
   }
 }
