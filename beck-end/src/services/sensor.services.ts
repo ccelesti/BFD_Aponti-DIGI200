@@ -43,7 +43,7 @@ export async function verificarStatusNivelGas (tipo_gas: string, nivel_leitura_s
         let porcent_atual_stts_niv_sensor;
         let stts_niv_gas;
         if (!nivel_leitura_sensor){
-            nivel_leitura_sensor = 0;
+            nivel_leitura_sensor = undefined;
         }
         else {
             porcent_atual_stts_niv_sensor = (nivel_leitura_sensor/gas_peso_max) * 100;
