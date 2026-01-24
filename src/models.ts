@@ -48,6 +48,8 @@ export interface Endereco {
   numero?: string;
   complemento?: string | null;
   id_bairro: number;
+  nome_endereco: string;
+  endereco_principal : boolean;
 }
 
 export interface ClienteFornecedor {

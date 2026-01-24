@@ -1,18 +1,18 @@
-import { Cliente, Fornecedor, Endereco, Bairro } from "./models";
+import { Cliente, Fornecedor, Endereco, Bairro } from "../models";
 
 // 1. Interface DTO (Data Transfer Object) para unir as informações
-export interface ClienteCompletoDTO {
-    cliente: Cliente;
-    endereco: Endereco;
-    bairro: Bairro;
-}
+// export interface ClienteCompletoDTO {
+//     cliente: Cliente;
+//     endereco: Endereco;
+//     bairro: Bairro;
+// }
 
-export interface FornecedorCompletoDTO {
-    fornecedor: Fornecedor;
-    endereco: Endereco;
-    bairro: Bairro;
-    bairroAtendido?: Bairro; 
-}
+// export interface FornecedorCompletoDTO {
+//     fornecedor: Fornecedor;
+//     endereco: Endereco;
+//     bairro: Bairro;
+//     bairroAtendido?: Bairro; 
+// }
 
 interface ResultadoValidacao {
     valido: boolean;
@@ -94,23 +94,23 @@ export class Validador {
     }
 
     // --- 4. MÉTODO MESTRE: VALIDAÇÃO UNIFICADA (As 3 Tabelas) ---
-    static validarRegistroCompleto(dados: ClienteCompletoDTO): ResultadoValidacao {
-        let todosErros: string[] = [];
+    // static validarRegistroCompleto(dados: ClienteCompletoDTO): ResultadoValidacao {
+    //     let todosErros: string[] = [];
 
-        // Chama as validações específicas e concatena os erros
-        const resCliente = this.validarCliente(dados.cliente);
-        const resEndereco = this.validarEndereco(dados.endereco);
-        const resBairro = this.validarBairro(dados.bairro);
+    //     // Chama as validações específicas e concatena os erros
+    //     const resCliente = this.validarCliente(dados.cliente);
+    //     const resEndereco = this.validarEndereco(dados.endereco);
+    //     const resBairro = this.validarBairro(dados.bairro);
 
-        if (!resCliente.valido) todosErros = todosErros.concat(resCliente.erros);
-        if (!resEndereco.valido) todosErros = todosErros.concat(resEndereco.erros);
-        if (!resBairro.valido) todosErros = todosErros.concat(resBairro.erros);
+    //     if (!resCliente.valido) todosErros = todosErros.concat(resCliente.erros);
+    //     if (!resEndereco.valido) todosErros = todosErros.concat(resEndereco.erros);
+    //     if (!resBairro.valido) todosErros = todosErros.concat(resBairro.erros);
 
-        return {
-            valido: todosErros.length === 0,
-            erros: todosErros
-        };
-    }
+    //     return {
+    //         valido: todosErros.length === 0,
+    //         erros: todosErros
+    //     };
+    // }
 
     // --- 5. VALIDAÇÃO DE CLIENTE ---
     static validarCliente(dados: Cliente): ResultadoValidacao {
@@ -139,11 +139,11 @@ export class Validador {
     static validarFornecedor(dados: Fornecedor): ResultadoValidacao {
         let erros: string[] = [];
         const e1 = this.validarTexto("Nome Fantasia", dados.nome_fantasia, 3);
-    const e2 = this.validarTexto("Razão Social", dados.razao_social, 5);
-    const e3 = this.validarCNPJ(dados.cnpj);
-    const e4 = this.validarEmail(dados.email); // Agora validando e-mail!
-    const e5 = this.validarTelefone("Telefone Principal", dados.telefone_principal, true);
-    const e6 = this.validarSenha(dados.senha_hash); // Validando os 8 dígitos
+        const e2 = this.validarTexto("Razão Social", dados.razao_social, 5);
+        const e3 = this.validarCNPJ(dados.cnpj);
+        const e4 = this.validarEmail(dados.email); // Agora validando e-mail!
+        const e5 = this.validarTelefone("Telefone Principal", dados.telefone_principal, true);
+        const e6 = this.validarSenha(dados.senha_hash); // Validando os 8 dígitos
         
         if (e1) erros.push(e1);
         if (e2) erros.push(e2);
@@ -155,35 +155,41 @@ export class Validador {
         return { valido: erros.length === 0, erros };
     }
 
-// --- MÉTODO MESTRE: FORNECEDOR (Unindo as Tabelas) ---
-static validarFornecedorCompleto(dados: FornecedorCompletoDTO): ResultadoValidacao {
-    let todosErros: string[] = [];
+    // --- MÉTODO MESTRE: FORNECEDOR (Unindo as Tabelas) ---
+    // static validarFornecedorCompleto(dados: FornecedorCompletoDTO): ResultadoValidacao {
+    // let todosErros: string[] = [];
 
-    // 1. Valida dados básicos do Fornecedor
-    const resFornecedor = this.validarFornecedor(dados.fornecedor);
-    if (!resFornecedor.valido) todosErros = todosErros.concat(resFornecedor.erros);
+    // // 1. Valida dados básicos do Fornecedor
+    // const resFornecedor = this.validarFornecedor(dados.fornecedor);
+    // if (!resFornecedor.valido) {
+    //     todosErros = todosErros.concat(resFornecedor.erros);
+    // }
 
-    // 2. Valida o Endereço comercial
-    const resEndereco = this.validarEndereco(dados.endereco);
-    if (!resEndereco.valido) todosErros = todosErros.concat(resEndereco.erros);
+    // // 2. Valida o Endereço comercial
+    // const resEndereco = this.validarEndereco(dados.endereco);
+    // if (!resEndereco.valido){
+    //     todosErros = todosErros.concat(resEndereco.erros);
+    // }
 
-    // 3. Valida o Bairro onde o fornecedor está localizado
-    const resBairro = this.validarBairro(dados.bairro);
-    if (!resBairro.valido) todosErros = todosErros.concat(resBairro.erros);
+    // // 3. Valida o Bairro onde o fornecedor está localizado
+    // const resBairro = this.validarBairro(dados.bairro);
+    // if (!resBairro.valido) {
+    //     todosErros = todosErros.concat(resBairro.erros);
+    // }
 
-    // 4. Valida o Bairro Atendido (opcional)
-    if (dados.bairroAtendido) {
-        const resAtendido = this.validarBairro(dados.bairroAtendido);
-        if (!resAtendido.valido) {
-            // Adicionamos um prefixo para saber qual bairro deu erro
-            const errosAjustados = resAtendido.erros.map(e => `[Bairro Atendido] ${e}`);
-            todosErros = todosErros.concat(errosAjustados);
-        }
-    }
+    // // 4. Valida o Bairro Atendido (opcional)
+    // if (dados.bairroAtendido) {
+    //     const resAtendido = this.validarBairro(dados.bairroAtendido);
+    //     if (!resAtendido.valido) {
+    //         // Adicionamos um prefixo para saber qual bairro deu erro
+    //         const errosAjustados = resAtendido.erros.map(e => `[Bairro Atendido] ${e}`);
+    //         todosErros = todosErros.concat(errosAjustados);
+    //     }
+    // }
 
-    return {
-        valido: todosErros.length === 0,
-        erros: todosErros
-        };
-    }
+    // return {
+    //     valido: todosErros.length === 0,
+    //     erros: todosErros
+    //     };
+    // }
 }  

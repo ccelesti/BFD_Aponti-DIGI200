@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { pool } from "../database/db";
 import { Fornecedor } from "../models";
+import { Validador } from "./validacoes";
 
 /**
  * Cadastro de um novo fornecedor.
@@ -9,7 +10,22 @@ import { Fornecedor } from "../models";
 export async function adicionarFornecedor(req: Request, res: Response) {
   try {
     const {
-      nome_fantasia, razao_social, email, telefone_principal, telefone_alternativo = null, permissao_contato_cliente = false, cnpj, senha_hash, status_fornecedor = true }: Fornecedor = req.body;
+      nome_fantasia, 
+      razao_social,
+      email, 
+      telefone_principal,
+      telefone_alternativo = null, 
+      permissao_contato_cliente = false, 
+      cnpj, senha_hash, 
+      status_fornecedor = true 
+    }: Fornecedor = req.body;
+
+    if(!Validador.validarFornecedor(req.body).valido){
+      return res.status(500).json({
+      message: "Dados fora de padrão",
+      fornecedor: null
+    });
+    }
 
     const verificaCnpj = await pool.query(`SELECT EXISTS (SELECT 1 FROM fornecedor WHERE cnpj = $1) AS cnpj_existe`, [cnpj]);
 
@@ -94,7 +110,6 @@ export async function listarFornecedor(req: Request, res: Response) {
       message: `Fornecedor ${result.rows[0].nome_fantasia} encontrado com sucesso!`,
       fornecedor: result.rows[0]
     });
-
   } catch (error) {
     console.error(`Erro ao exibir fornecedor ${req.params.id}: `, error);
 

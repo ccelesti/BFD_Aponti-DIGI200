@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { pool } from "../database/db";
-import { Cliente } from "../models";
-
+import { Bairro, Cliente, Endereco } from "../models";
+import { Validador } from "./validacoes";
 /**
  * Cadastro de novo cliente.
  * @route POST /clientes
@@ -11,6 +11,12 @@ export async function adicionarClientes(req: Request, res: Response) {
     const {
       nome, sobrenome, email, telefone_principal, telefone_alternativo = null, permissao_contato_fornecedor = false, cpf, vale_gas_ativo = false, senha_hash, data_nascimento, status_cliente = true}: Cliente = req.body;
 
+      if(!Validador.validarFornecedor(req.body).valido){
+            return res.status(500).json({
+            message: "Dados fora de padrão",
+            fornecedor: null
+          });
+      }
       const verificaCpf = await pool.query(`SELECT EXISTS (SELECT 1 FROM cliente WHERE cpf = $1) AS cpf_existe`, [cpf]);
       
       const verificaEmail = await pool.query(`SELECT EXISTS (SELECT 1 FROM cliente WHERE email = $1) AS email_existe`, [email]);
@@ -254,8 +260,14 @@ export async function adicionarEnderecoCliente(req: Request, res: Response) {
     const id = Number(req.params.id);
 
     const {cep, endereco_logradouro, numero = "S/N", complemento = null, id_bairro, nome_endereco = "Casa", endereco_principal = false
-    } = req.body;
+    } : Endereco = req.body;
 
+    if(!Validador.validarEndereco(req.body).valido){
+      return res.status(500).json({
+      message: "Dados fora do padrão",
+      fornecedor: null
+    });  
+  }
     const endereco = await pool.query(`INSERT INTO endereco (cep, endereco_logradouro, numero, complemento, id_bairro) VALUES ($1,$2,$3,$4,$5)  RETURNING id_endereco`, [cep, endereco_logradouro, numero, complemento, id_bairro]
     );
 
