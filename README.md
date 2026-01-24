@@ -7,10 +7,10 @@
 
 <br>
 
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)   [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)   [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)   [![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)   [![License](https://img.shields.io/badge/License-MIT-red.svg)](LICENSE)    
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)   [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)   [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)   [![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)   [![License](https://img.shields.io/badge/License-MIT-red.svg)](LICENSE) <!--- [![Postman Documentation](https://img.shields.io/badge/Postman-Documentation-FF6C37?style=for-the-badge&logo=postman&logoColor=white)](https://documenter.getpostman.com/view/51751781/2sBXVkCA7p) -->
 
 ## 📝 Descrição Geral
-O **BotijON** faz parte do _Projeto Integrador_ desenvolvido no contexto do programa **[*Bolsa Futuro Digital*](https://aponti.org.br/capital-humano#programa-bfd)**, promovido pela **[*Aponti - Pernambuco*](https://aponti.org.br/)**, como atividade de culminância da formação, pela equipe **DIGI-200**, da _Turma 33 PE C1 - Back-end Node.js_.
+O **BotijON** faz parte do _Projeto Integrador_, desenvolvido no contexto do programa **[*Bolsa Futuro Digital*](https://aponti.org.br/capital-humano#programa-bfd)**, promovido pela **[*Aponti - Pernambuco*](https://aponti.org.br/)**, como atividade de culminância da formação, pela equipe **DIGI-200**, da _Turma 33 PE C1 - Back-end Node.js_.
 
 O sistema funciona como uma **API backend**, responsável por simular o monitoramento do consumo de gás de cozinha em uma residência, e atuando como **ponte de comunicação** entre **clientes** e **fornecedores**, com foco em:
 - organização da arquitetura backend;
@@ -284,6 +284,18 @@ As rotas seguem o padrão REST e estão organizadas por domínio (clientes, forn
 As rotas podem ser testadas com:
 - Thunder Client (Extensão do VS Code)
 - Postman (Coleções documentadas)
+
+<!--- 
+## 🧪 Testes das Rotas
+As rotas podem ser testadas e visualizadas através da nossa documentação interativa via Postman: 
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/51751781/2sBXVkCA7p)
+
+### Instruções para Teste Local:
+1. Certifique-se de que a API está rodando localmente (`npm run dev`).
+2. Na documentação do Postman, verifique se o **Environment** está selecionado como `Localhost`.
+3. As variáveis de ambiente traduzirão automaticamente o `{{url}}` para `http://localhost:3001`. -->
+
 
 ---
 

@@ -140,6 +140,46 @@ CREATE TABLE Bairro_Atendido_Fornecedor (
 );
 
 -- ===========================================================================
+-- ====================              SENSOR               ====================
+-- ===========================================================================
+
+CREATE TABLE Sensor (
+    id_sensor SERIAL PRIMARY KEY,
+    id_cliente INT NOT NULL,
+    tipo_gas VARCHAR(10) NOT NULL,
+    status_gas VARCHAR(20) CHECK (
+        status_gas IN (
+            'Muito alto',
+            'Alto',
+            'Médio',
+            'Baixo médio',
+            'Baixo'
+        )
+    ),
+    status_uso BOOLEAN,
+    data_ultima_troca DATE,
+
+    CONSTRAINT fk_sensor_cliente
+        FOREIGN KEY (id_cliente)
+        REFERENCES cliente(id_cliente)
+);
+
+-- ===========================================================================
+-- ====================         LEITURA_SENSOR            ====================
+-- ===========================================================================
+
+CREATE TABLE Leitura_Sensor (
+    id_leitura SERIAL PRIMARY KEY,
+    id_sensor INT NOT NULL,
+    nivel_atual INT,
+    data_ultima_leitura DATE DEFAULT NOW(),
+
+    CONSTRAINT fk_leitura_sensor
+        FOREIGN KEY (id_sensor)
+        REFERENCES sensor(id_sensor)
+);
+
+-- ===========================================================================
 -- ====================         VIEWS (SEGURANÇA)         ====================
 -- ===========================================================================
 -- ===========================================================================

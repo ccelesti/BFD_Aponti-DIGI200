@@ -73,7 +73,7 @@ export async function listarBairrosAtendidos(req: Request, res: Response) {
 
 /**
  * Exibe todos os bairros atendidos por um fornecedor específico.
- * @route GET /fornecedores/:id/areas-atendidas
+ * @route GET /fornecedores/:id/areas
  * @param {string} req.params.id - ID do fornecedor.
  */
 export async function listarBairroAtendido(req: Request, res: Response) {
