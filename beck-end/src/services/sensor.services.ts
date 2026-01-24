@@ -53,9 +53,7 @@ export async function verificarStatusNivelGas (nivel_leitura_sensor:number, tipo
         }else {
             throw new Error ("A porcentagem do nivel está incorreta");
         }
-        return {
-            status_nivel_gas: stts_niv_gas
-        }
+        return JSON.stringify(stts_niv_gas);
         
     }catch(error){
         console.error ("Algo de errado na verficação de status do gás.", error);
