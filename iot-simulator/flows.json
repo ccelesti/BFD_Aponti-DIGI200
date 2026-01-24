@@ -35,15 +35,15 @@
         "type": "function",
         "z": "ed92b1b71e656011",
         "name": "triagem_de_nivel",
-        "func": "let msg_erro_triagem_nivel;\ntry {\n    let db_local = global.get(\"data_base_local\") || {};\n    let id_sensor = msg.miniDB._id_sensor\n    msg.miniDB._nivel_gas = db_local[id_sensor].nivel_gas\n    \n    if (!msg.miniDB._nivel_gas ){\n        msg.triagens = \"2\";\n        return msg;\n\n    }else if(msg.miniDB._nivel_gas <= 1300 && msg.miniDB._nivel_gas > 0){\n        msg.miniDB._status_cliente = \"Ok\";\n        msg.triagens = \"3\";\n        return msg;\n\n    }else {\n        throw new Error (\"Nível do gás está incorreto\");\n        \n    }\n}catch (error){\n    msg_erro_triagem_nivel = error.message ;\n    //node.error(msg_erro_triagem_nivel, msg);\n    msg.error = true;\n    \n    return msg;\n}\n\n\n\n\n",
+        "func": "let msg_erro_triagem_nivel;\ntry {\n    let id_sensor = msg.payload.id_sensor;\n    let db_local = global.get(\"data_base_local\") || {};\n    if (!db_local[id_sensor]){\n        throw new Error (\"Sensor não encontrado na memoria local\");\n    }\n    msg.miniDB._nivel_gas = db_local[id_sensor].nivel_gas;\n    \n    if (!msg.miniDB._nivel_gas ){\n        msg.triagens = \"1\";\n        return msg;\n\n    }else if(msg.miniDB._nivel_gas <= 1300 && msg.miniDB._nivel_gas > 0){\n        msg.miniDB._status_cliente = \"Ok\";\n        msg.triagens = \"2\";\n        return msg;\n\n    }else {\n        throw new Error (\"Nível do gás está incorreto\");\n        \n    }\n}catch (error){\n    msg_erro_triagem_nivel = error.message ;\n    //node.error(msg_erro_triagem_nivel, msg);\n    msg.error = true;\n    \n    return msg;\n}\n\n\n\n\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 510,
-        "y": 320,
+        "x": 650,
+        "y": 500,
         "wires": [
             [
                 "36129f8ee62dd7da"
@@ -83,43 +83,10 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 80,
-        "y": 320,
+        "x": 440,
+        "y": 580,
         "wires": [
-            [
-                "a8baffcecdb3447d"
-            ]
-        ]
-    },
-    {
-        "id": "2b72f97ffc46d85d",
-        "type": "http request",
-        "z": "ed92b1b71e656011",
-        "name": "cadastro_sensor",
-        "method": "POST",
-        "ret": "obj",
-        "paytoqs": "body",
-        "url": "http:localhost:3001/sensor/:id/cadastrarNovoSensor",
-        "tls": "",
-        "persist": false,
-        "proxy": "",
-        "insecureHTTPParser": false,
-        "authType": "",
-        "senderr": true,
-        "headers": [
-            {
-                "keyType": "other",
-                "keyValue": "",
-                "valueType": "other",
-                "valueValue": "req.params.id_sensor"
-            }
-        ],
-        "x": 900,
-        "y": 240,
-        "wires": [
-            [
-                "1246084608cb48a5"
-            ]
+            []
         ]
     },
     {
@@ -139,22 +106,14 @@
                 "t": "eq",
                 "v": "2",
                 "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "3",
-                "vt": "str"
             }
         ],
         "checkall": "true",
         "repair": false,
-        "outputs": 3,
-        "x": 680,
-        "y": 320,
+        "outputs": 2,
+        "x": 820,
+        "y": 500,
         "wires": [
-            [
-                "2b72f97ffc46d85d"
-            ],
             [
                 "2a4433ccd2de66c3"
             ],
@@ -175,8 +134,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1520,
-        "y": 420,
+        "x": 1460,
+        "y": 580,
         "wires": [
             [
                 "f1147a229d0cc3eb"
@@ -199,8 +158,8 @@
         "authType": "",
         "senderr": true,
         "headers": [],
-        "x": 910,
-        "y": 320,
+        "x": 1050,
+        "y": 340,
         "wires": [
             [
                 "3546588aa1fe3893"
@@ -219,12 +178,10 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1340,
-        "y": 240,
+        "x": 1700,
+        "y": 260,
         "wires": [
-            [
-                "3945c630c07d35c6"
-            ]
+            []
         ]
     },
     {
@@ -239,8 +196,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1270,
-        "y": 420,
+        "x": 1050,
+        "y": 520,
         "wires": [
             [
                 "c669191ef5230198"
@@ -259,12 +216,10 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 280,
-        "y": 320,
+        "x": 440,
+        "y": 360,
         "wires": [
-            [
-                "24910b238294dc6c"
-            ]
+            []
         ]
     },
     {
@@ -279,8 +234,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1790,
-        "y": 420,
+        "x": 1730,
+        "y": 580,
         "wires": [
             [
                 "a2a70f3e7f5c9bc4"
@@ -295,8 +250,8 @@
         "property": "miniDB",
         "action": "",
         "pretty": false,
-        "x": 2040,
-        "y": 420,
+        "x": 1980,
+        "y": 580,
         "wires": [
             [
                 "8510e25cbf568dde"
@@ -319,25 +274,11 @@
         "authType": "",
         "senderr": true,
         "headers": [],
-        "x": 2210,
-        "y": 420,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "1246084608cb48a5",
-        "type": "json",
-        "z": "ed92b1b71e656011",
-        "name": "cadastro_sensor",
-        "property": "miniDB",
-        "action": "",
-        "pretty": false,
-        "x": 1100,
-        "y": 240,
+        "x": 1970,
+        "y": 520,
         "wires": [
             [
-                "8b4ab5134c5a137b"
+                "fee61327a61569ae"
             ]
         ]
     },
@@ -349,12 +290,105 @@
         "property": "miniBD",
         "action": "",
         "pretty": false,
-        "x": 1110,
-        "y": 320,
+        "x": 1050,
+        "y": 400,
         "wires": [
             [
                 "3945c630c07d35c6"
             ]
         ]
+    },
+    {
+        "id": "4f57f6acb0c493b8",
+        "type": "http in",
+        "z": "ed92b1b71e656011",
+        "name": "Iniciar_sensor",
+        "url": "/iniciar-monitoramento",
+        "method": "post",
+        "upload": false,
+        "skipBodyParsing": false,
+        "swaggerDoc": "",
+        "x": 90,
+        "y": 420,
+        "wires": [
+            [
+                "1b1f1aa2d8132244"
+            ]
+        ]
+    },
+    {
+        "id": "1b1f1aa2d8132244",
+        "type": "function",
+        "z": "ed92b1b71e656011",
+        "name": "function 1",
+        "func": "\nlet info_recebidas =  msg.req.body\nlet db_local = global.get(\"data_base_local\") || {};\n\ndb_local[info_recebidas.id_sensor] = {\n    id_sensor: info_recebidas.id_sensor,\n    cliente_id : info_recebidas.cliente_id,\n    tipo_gas: info_recebidas.tipo_gas,\n    hora_da_medicao: new Date().toLocaleTimeString()\n};\n\nglobal.set(\"data_base_local\", db_local);\n\nmsg.miniDB = db_local[info_recebidas.id_sensor]; \n\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 420,
+        "wires": [
+            [
+                "92543fe47cce8de7",
+                "50c19570087da170"
+            ]
+        ]
+    },
+    {
+        "id": "92543fe47cce8de7",
+        "type": "http response",
+        "z": "ed92b1b71e656011",
+        "name": "Sensor_iniciado",
+        "statusCode": "200",
+        "headers": {},
+        "x": 440,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "de38be4fd2a2e10f",
+        "type": "link in",
+        "z": "ed92b1b71e656011",
+        "name": "Start_fluxo",
+        "links": [
+            "50c19570087da170",
+            "fee61327a61569ae"
+        ],
+        "x": 505,
+        "y": 500,
+        "wires": [
+            [
+                "24910b238294dc6c"
+            ]
+        ]
+    },
+    {
+        "id": "50c19570087da170",
+        "type": "link out",
+        "z": "ed92b1b71e656011",
+        "name": "Link Start Fluxo",
+        "mode": "link",
+        "links": [
+            "de38be4fd2a2e10f"
+        ],
+        "x": 435,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "fee61327a61569ae",
+        "type": "link out",
+        "z": "ed92b1b71e656011",
+        "name": "link out 1",
+        "mode": "link",
+        "links": [
+            "de38be4fd2a2e10f"
+        ],
+        "x": 2095,
+        "y": 520,
+        "wires": []
     }
 ]

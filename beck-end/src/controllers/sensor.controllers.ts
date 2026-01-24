@@ -2,7 +2,9 @@
 // import { pool } from "../database/db";
 // import { SensorMedicaoGas } from "../models";
 // import axios from 'axios';
-// import { calcularPrevisao } from "../services/sensor.services"
+// import { calcularPrevisao , verificarStatusNivelGas } from "../services/sensor.services"
+
+import { verificarStatusNivelGas } from "../services/sensor.services";
 
 
 // export async function receberLeituraNivelSensor (res: Response, req: Request){
@@ -32,12 +34,14 @@
     //     //seria ideal eu ter aqui dentro também o id do endereço em especifico
     //     //para pegar o id do endereço seria bom colocar a função visualizarEnderecoCliente dentro de um arquivo dentro da pasta service 
     //     const { id_sensor, id_cliente , tipo_gas } = req.body;
-
+           
+           
+    //     const gas_peso_max = await verificarStatusNivelGas( tipo_gas )
     //     const query = 'INSERT INTO SENSORES (id_sensor, cliente_id, tipo_gas, data_inicio ) VALUES ($1, $2, $3, $3) RETURNING * ' 
     //     const novo_sensor = await pool.query (query , [id_sensor, id_cliente, tipo_gas, ultima_leitura]);
 
     //     const url_sensor_nodered = 'http://localhost:1880/iniciar-monitoramento'; 
-           //url provavelmente destualizada, verificar;
+           
 
     //     await axios.post(url_sensor_nodered, {
     //         mensagem: "ATIVAR_SENSOR",

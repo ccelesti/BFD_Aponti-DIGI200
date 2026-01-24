@@ -18,7 +18,7 @@ export async function calcularPrevisao (nivel_atual: number, data_ultima_troca: 
     return Math.floor (dias_restantes_gas);
 
 }
-export async function verificarStatusNivelGas (nivel_leitura_sensor:number, tipo_gas: string){
+export async function verificarStatusNivelGas (tipo_gas: string, nivel_leitura_sensor?:number){
 
    try {
     let gas_peso_max;
@@ -35,27 +35,37 @@ export async function verificarStatusNivelGas (nivel_leitura_sensor:number, tipo
         }else{
             throw new Error ("O Peso do gás está incorreto");
         }
-        //stts: status , niv: nivel;
-        const porcent_atual_stts_niv_sensor = (nivel_leitura_sensor/gas_peso_max) * 100;
+        //stts: status , niv: nivel; 
+        
+        //Objetivo das modificações: Coloquei o parametro  "nivel_leitura_senso" como opicional pois na função cadastroNovoSensor eu precisava apenas do peso maximo do gás;
+        // Nessa estrutura condicional modificada eu apenas fiz com que no caso em que fosse dado apenas o tipo de gas ele iria ignorar todo o procedimento do status;
+        // Pode apagar esse textão depois de ler kkkk
+        let porcent_atual_stts_niv_sensor;
         let stts_niv_gas;
-        if (porcent_atual_stts_niv_sensor >= 70 && porcent_atual_stts_niv_sensor <= 100){
-            stts_niv_gas = "Muito Alto";
-        } else if (porcent_atual_stts_niv_sensor < 70 && porcent_atual_stts_niv_sensor >= 50){
-            stts_niv_gas = "Alto";
-        }else if (porcent_atual_stts_niv_sensor < 50 && porcent_atual_stts_niv_sensor >= 30){
-            stts_niv_gas = "Médio";
-        }else if (porcent_atual_stts_niv_sensor < 30 && porcent_atual_stts_niv_sensor >= 15){
-            stts_niv_gas = "Baixo";
-        }else if (porcent_atual_stts_niv_sensor < 15 && porcent_atual_stts_niv_sensor >= 6){
-            stts_niv_gas = "Muito baixo";
-        }else if (porcent_atual_stts_niv_sensor < 6 && porcent_atual_stts_niv_sensor >= 0){
-            stts_niv_gas = "Urgente";
-        }else {
-            throw new Error ("A porcentagem do nivel está incorreta");
+        if (!nivel_leitura_sensor){
+            nivel_leitura_sensor = 0;
+        }
+        else {
+            porcent_atual_stts_niv_sensor = (nivel_leitura_sensor/gas_peso_max) * 100;
+            if (porcent_atual_stts_niv_sensor >= 70 && porcent_atual_stts_niv_sensor <= 100){
+                stts_niv_gas = "Muito Alto";
+            } else if (porcent_atual_stts_niv_sensor < 70 && porcent_atual_stts_niv_sensor >= 50){
+                stts_niv_gas = "Alto";
+            }else if (porcent_atual_stts_niv_sensor < 50 && porcent_atual_stts_niv_sensor >= 30){
+                stts_niv_gas = "Médio";
+            }else if (porcent_atual_stts_niv_sensor < 30 && porcent_atual_stts_niv_sensor >= 15){
+                stts_niv_gas = "Baixo";
+            }else if (porcent_atual_stts_niv_sensor < 15 && porcent_atual_stts_niv_sensor >= 6){
+                stts_niv_gas = "Muito baixo";
+            }else if (porcent_atual_stts_niv_sensor < 6 && porcent_atual_stts_niv_sensor >= 0){
+                stts_niv_gas = "Urgente";
+            }else {
+                throw new Error ("A porcentagem do nivel está incorreta");
+            }
         }
         return {
             stts_niv_gas,
-             gas_peso_max};
+            gas_peso_max};
         
     }catch(error){
         console.error ("Algo de errado na verificação de status do gás.", error);
