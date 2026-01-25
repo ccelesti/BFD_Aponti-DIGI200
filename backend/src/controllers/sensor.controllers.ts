@@ -4,7 +4,7 @@ import { SensorMedicaoGas, LeituraSensor } from "../models";
 import axios from 'axios';
 import * as serviceSensor from "../services/sensor.services"
 
-//Essa função é onde recebemos os
+//Essa função é onde recebemos os 
 export async function receberLeituraNivelSensor(req: Request, res: Response) {
     try {
         const {id_sensor} = req.params
@@ -15,7 +15,7 @@ export async function receberLeituraNivelSensor(req: Request, res: Response) {
         }
 
         const sensorInfo = await pool.query(
-            'SELECT tipo_gas, data_ultima_troca FROM SensorMedicaoGas WHERE id_sensor = $1',
+            'SELECT tipo_gas, data_ultima_troca FROM Sensor WHERE id_sensor = $1',
             [id_sensor]
         );
 
@@ -28,9 +28,9 @@ export async function receberLeituraNivelSensor(req: Request, res: Response) {
         const pesos = await serviceSensor.pesoMaxBotijaoGas(tipo_gas);
 
         const peso_bruto = peso_atual;
-        let peso_fluido = peso_bruto - pesos.pesoTara;
-
+        let peso_fluido = Number(peso_bruto) - Number(pesos.pesoTara);
         if (peso_fluido < 0) peso_fluido = 0;
+        if (peso_fluido > pesos.pesoMaxFluido) peso_fluido = pesos.pesoMaxFluido;
 
 
         const dias_restantes = await serviceSensor.calcularPrevisaoPorNivel(
@@ -39,17 +39,19 @@ export async function receberLeituraNivelSensor(req: Request, res: Response) {
             tipo_gas
         );
 
+        const nivel_percent = await serviceSensor.porcentagemPesoGas(tipo_gas, peso_fluido);
+        const nivel_serial = Math.max(0, Math.min(100, Math.round(nivel_percent)));
+
         await pool.query(
-            `INSERT INTO LeituraSensor 
-             (id_sensor, peso_atual, previsao_dias)
-             VALUES ($1, $2, $3)`,
-            [id_sensor, peso_atual, dias_restantes]
+            `INSERT INTO Leitura_Sensor (id_sensor, nivel_atual) VALUES ($1, $2)`,
+            [id_sensor, nivel_serial]
         );
 
         return res.json({
             success: true,
             peso_atual,
             peso_bruto,
+            nivel_percent: nivel_serial,
             previsao_dias: dias_restantes
         });
 
@@ -70,13 +72,12 @@ export async function cadastroNovoSensor ( req: Request, res: Response){
         if (verificar_cliente.rowCount === 0){
             throw new Error ("Id de cliente não encontrado ou incorreto");
         }
-        const verificarTipoGas = serviceSensor.verificarTipoGas(tipo_gas);
         if (!serviceSensor.verificarTipoGas(tipo_gas)) {
         throw new Error("Tipo de gás inválido");
         }
 
 
-        const query = 'INSERT INTO SensorMedicaoGas (id_sensor, id_cliente, tipo_gas, data_ultima_troca ) VALUES ($1, $2, $3, $4) RETURNING * ' 
+        const query = 'INSERT INTO Sensor (id_sensor, id_cliente, tipo_gas, data_ultima_troca ) VALUES ($1, $2, $3, $4) RETURNING * ' 
         const novo_sensor = await pool.query (query , [id_sensor, id_cliente, tipo_gas,  data_ultima_troca ]);
 
         if (novo_sensor.rowCount === 0){
@@ -84,7 +85,6 @@ export async function cadastroNovoSensor ( req: Request, res: Response){
         }
 
         const url_sensor_nodered = 'http://bfd_nodered:1880/iniciar_monitoramento'; 
-
 
        const gas_peso_max = await serviceSensor.pesoMaxBotijaoGas( tipo_gas );
         
@@ -121,11 +121,9 @@ export async function reinicializarSensor ( req: Request ,res: Response){
     try {
         const {id_sensor} = req.params;
 
-        const renovar_gas_data_troca = await pool.query (`UPDATE SensorMedicaoGas SET data_ultima_troca = NOW(),
-            ativo = true,
-            status_gas = 'renovado' // <--- CORREÇÃO: JÁ ATUALIZA O STATUS PARA SAIR DO ESTADO DE ALERTA
-            WHERE id_sensor = $1 
-            RETURNING *`, [id_sensor]);
+        const renovar_gas_data_troca = await pool.query (`UPDATE Sensor SET data_ultima_troca = NOW(),
+            status_uso = true,
+            WHERE id_sensor = $1 RETURNING *`, [id_sensor]);
 
         if (renovar_gas_data_troca.rowCount === 0){
             return res.status(404).json({error: "Sensor não encontrado, não foi possivel reiniciar"});
@@ -143,8 +141,8 @@ export async function reinicializarSensor ( req: Request ,res: Response){
         );
 
         await pool.query (
-            'INSERT INTO LeituraSensor (id_sensor, peso_atual, previsao_dias) VALUES ($1, $2, $3)', 
-            [id_sensor, pesoMaxFluido, previsao_inicial]
+            'INSERT INTO Leitura_Sensor (id_sensor, peso_atual) VALUES ($1, $2)', 
+            [id_sensor, 100]
         );
 
         const node_red_url = 'http://bfd_nodered:1880/sensor/reset';
@@ -174,18 +172,16 @@ export async function verficarEstadoCliente (req: Request, res: Response){
     try{
         const {id_cliente, id_sensor} = req.params;
 
-        const cliente_info = await pool.query ('SELECT status_gas  FROM SensorMedicaoGas WHERE id_cliente = $1 AND id_sensor = $2 ', [id_cliente, id_sensor]);
+        const cliente_info = await pool.query ('SELECT status_uso  FROM Sensor WHERE id_cliente = $1 AND id_sensor = $2 ', [id_cliente, id_sensor]);
         if (cliente_info.rowCount === 0) {
             return res.status(404).json ({error:"Cliente não encontrado"});
 
         }
         
-        const status = cliente_info.rows[0].status_gas;
-        if (status !== "renovado" && status !== "Renovado" && status !== "Cancelado"){
-            return res.status(200).json ({status: "Em espera"});
-        }
+        const status_uso = cliente_info.rows[0].status_uso;
+        const status = status_uso ? "Renovado" : "Em espera";
 
-        return res.status(200).json ({status: status});
+        return res.status(200).json ({ status});
 
     }catch(error: any){
         console.error("Erro ao verificar estado:", error.message);
@@ -196,8 +192,8 @@ export async function verficarEstadoCliente (req: Request, res: Response){
 export async function renovarStatusSensor (req:Request, res: Response){
     try{
         const {id_cliente} = req.params;
-        const { id_sensor, status_gas} = req.body;
-        const status = await pool.query ('UPDATE SensorMedicaoGas SET status_gas = $1 WHERE id_cliente = $2 AND id_sensor = $3', [status_gas, id_cliente, id_sensor]);
+        const { id_sensor, status_uso} = req.body;
+        const status = await pool.query ('UPDATE Sensor SET status_uso = $1 WHERE id_cliente = $2 AND id_sensor = $3 RETURNING *', [status_uso, id_cliente, id_sensor]);
 
         if (status.rowCount === 0){
             throw new Error ("Status não foi alterado");

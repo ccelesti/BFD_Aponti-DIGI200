@@ -13,6 +13,12 @@ export async function calcularPrevisaoPorNivel(
   if (dias_passados < 1) return 30;
 
   const config = await pesoMaxBotijaoGas(tipo_gas);
+
+  let peso_valido = Number(peso_fluido);
+  if (isNaN(peso_valido)) peso_valido = 0;
+  if (peso_valido < 0) peso_valido = 0;
+  if (peso_valido > config.pesoMaxFluido) peso_valido = config.pesoMaxFluido;
+
   const gas_consumido = config.pesoMaxFluido - peso_fluido;
 
   if (gas_consumido <= 0) return 30;
@@ -98,16 +104,15 @@ export async function pesoMaxBotijaoGas (tipo_gas: string): Promise<PesoBotijao>
 //Essa função calcula a porcentagem do nivel atual em que foi feita a leitura
 //Como parametro é passado o tipo do gas (para acessarmos o peso do fluido e apenas do butijão) e o nivel atual da leitura;
 //Dentro da função corrigimos a diferença Peso Total-Peso botijão que nos dá a quantidade de fluido;
-export async function porcentagemPesoGas (tipo_gas: string, peso_atual: number){
+export async function porcentagemPesoGas (tipo_gas: string, peso_fluido: number){
     const peso_config = await pesoMaxBotijaoGas( tipo_gas);
 
-    let peso_apenas_fluido = peso_atual;
-    if (peso_atual > peso_config.pesoMaxFluido){
-        peso_apenas_fluido = peso_atual - peso_config.pesoTara
-    }
+    
+    let valido = Number(peso_fluido);
+    if (isNaN(valido) || valido < 0) valido = 0;
+    if (valido > peso_config.pesoMaxFluido) valido = peso_config.pesoMaxFluido;
 
-    if (peso_apenas_fluido < 0 ) peso_apenas_fluido = 0;
-    const porcentagem_peso_gas = (peso_apenas_fluido / (peso_config.pesoMaxFluido)) * 100;
+    const porcentagem_peso_gas = (valido / (peso_config.pesoMaxFluido)) * 100;
 
     return porcentagem_peso_gas
     
