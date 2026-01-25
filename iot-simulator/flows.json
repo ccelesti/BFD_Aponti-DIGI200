@@ -173,7 +173,7 @@
         "id": "1b1f1aa2d8132244",
         "type": "function",
         "z": "ed92b1b71e656011",
-        "name": "function 1",
+        "name": " Sart Sensor",
         "func": "\nlet info_recebidas =  msg.req.body\nlet db_local = global.get(\"data_base_local\") || {};\n\ndb_local[info_recebidas.id_sensor] = {\n    id_sensor: info_recebidas.id_sensor,\n    id_cliente : info_recebidas.id_cliente,\n    pesoBruto: info_recebidas.peso_bruto,\n    pesoTara: info_recebidas.peso_tara,\n    pesoFluido: info_recebidas.peso_fluido\n};\n\nglobal.set(\"data_base_local\", db_local);\n\nmsg.miniDB = db_local[info_recebidas.id_sensor]; \n\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
@@ -181,7 +181,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 240,
+        "x": 250,
         "y": 420,
         "wires": [
             [

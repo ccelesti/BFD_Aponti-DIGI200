@@ -4,7 +4,7 @@ import { SensorMedicaoGas, LeituraSensor } from "../models";
 import axios from 'axios';
 import * as serviceSensor from "../services/sensor.services"
 
-
+//Essa função é onde recebemos os
 export async function receberLeituraNivelSensor(req: Request, res: Response) {
     try {
         const {id_sensor} = req.params
@@ -27,9 +27,13 @@ export async function receberLeituraNivelSensor(req: Request, res: Response) {
 
         const pesos = await serviceSensor.pesoMaxBotijaoGas(tipo_gas);
 
-        const peso_bruto = peso_atual + pesos.pesoTara;
+        const peso_bruto = peso_atual;
+        let peso_fluido = peso_bruto - pesos.pesoTara;
 
-        const dias_restantes = await serviceSensor.calcularPrevisao(
+        if (peso_fluido < 0) peso_fluido = 0;
+
+
+        const dias_restantes = await serviceSensor.calcularPrevisaoPorNivel(
             peso_atual,
             data_ultima_troca,
             tipo_gas
@@ -132,7 +136,7 @@ export async function reinicializarSensor ( req: Request ,res: Response){
         const configPesos = await serviceSensor.pesoMaxBotijaoGas(tipo_gas);
         const { pesoTara, pesoMaxFluido, pesoBruto } = configPesos;
 
-        const previsao_inicial = await serviceSensor.calcularPrevisao(
+        const previsao_inicial = await serviceSensor.calcularPrevisaoPorNivel(
             pesoMaxFluido, 
             new Date(), 
             tipo_gas

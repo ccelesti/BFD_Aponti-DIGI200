@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   api:
-    build: ./beck-end      
+    build: ./back-end      
     container_name: bfd_api
     ports:
       - "${API_PORT}:3001"

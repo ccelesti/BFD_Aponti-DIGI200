@@ -1,40 +1,28 @@
 import { error } from "node:console";
 
-export async function calcularPrevisao (peso_atual: number, data_ultima_troca: Date, tipo_gas: string){
-    const hoje = new Date();
-    const diff_ms = hoje.getTime() - new Date(data_ultima_troca).getTime();
-    const dias_passados = diff_ms / (1000 * 60 * 60 * 24);
+export async function calcularPrevisaoPorNivel(
+  peso_fluido: number,
+  data_ultima_troca: Date,
+  tipo_gas: string
+) {
+  const hoje = new Date();
+  const dias_passados =
+    (hoje.getTime() - new Date(data_ultima_troca).getTime()) /
+    (1000 * 60 * 60 * 24);
 
-    
-    if (dias_passados < 1) {
-        return 30; 
-    }
+  if (dias_passados < 1) return 30;
 
-    const config = await pesoMaxBotijaoGas(tipo_gas);
+  const config = await pesoMaxBotijaoGas(tipo_gas);
+  const gas_consumido = config.pesoMaxFluido - peso_fluido;
 
-    let peso_gas_atual = peso_atual - config.pesoTara;
+  if (gas_consumido <= 0) return 30;
 
-    if (peso_gas_atual < 0) peso_gas_atual = 0;
-    if (peso_gas_atual > config.pesoMaxFluido) {
-        peso_gas_atual = config.pesoMaxFluido;
-    }
+  const consumo_diario = gas_consumido / dias_passados;
+  if (consumo_diario <= 0) return 30;
 
-    const gas_consumido = config.pesoMaxFluido - peso_gas_atual;
-
-    if (gas_consumido <= 0) {
-        return 30;
-    }
-
-    const consumo_diario = gas_consumido / dias_passados;
-
-    if (consumo_diario <= 0) {
-        return 30;
-    }
-
-    const dias_restantes = peso_gas_atual / consumo_diario;
-
-    return Math.max(0, Math.floor(dias_restantes));
+  return Math.max(0, Math.floor(peso_fluido / consumo_diario));
 }
+
 
 
 
