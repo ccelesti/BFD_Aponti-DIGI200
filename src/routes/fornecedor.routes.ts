@@ -4,15 +4,17 @@ import * as bairroFornecedor from '../controllers/bairroFornecedor.controller';
 
 const router = Router();
 
+// Áreas de atendimento do fornecedor (bairros)
+router.get("/areas", bairroFornecedor.listarBairrosAtendidos);
+
 // Fornecedores
-router.post("/", fornecedor.adicionarFornecedor);
 router.get("/", fornecedor.listarFornecedores);
+router.post("/", fornecedor.adicionarFornecedor);
 router.get("/:id", fornecedor.listarFornecedor);
 router.put("/:id", fornecedor.editarFornecedor);
 router.delete("/:id", fornecedor.excluirFornecedor);
 
 // Áreas de atendimento do fornecedor (bairros)
-router.get("/areas", bairroFornecedor.listarBairrosAtendidos);
 router.post("/:id/areas", bairroFornecedor.adicionarBairrosAtendidos);
 router.get("/:id/areas", bairroFornecedor.listarBairroAtendido);
 router.put("/:id/areas/:id_bairro", bairroFornecedor.editarBairroFornecido);

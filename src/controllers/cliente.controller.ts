@@ -465,15 +465,15 @@ export async function listarFornecedoresRecomendados(req: Request, res: Response
 /**
  * Permite que um cliente visualize os horários de funcionamento de um fornecedor específico (com vínculo ativo).
  * @route GET /clientes/:id_cliente/fornecedores/:id_fornecedor/horarios
- * @param {string} req.params.id_cliente - ID do cliente.
+ * @param {string} req.params.id - ID do cliente.
  * @param {string} req.params.id_fornecedor - ID do fornecedor.
  */
 export async function visualizarHorarioFuncionamentoFornecedor(req: Request, res: Response) {
   try {
-    const id_cliente = Number(req.params.id_cliente);
+    const id = Number(req.params.id);
     const id_fornecedor = Number(req.params.id_fornecedor);
 
-    const vinculo = await pool.query(`SELECT 1 FROM cliente_fornecedor WHERE id_cliente = $1 AND id_fornecedor = $2 AND status_vinculo = true`, [id_cliente, id_fornecedor]
+    const vinculo = await pool.query(`SELECT 1 FROM cliente_fornecedor WHERE id_cliente = $1 AND id_fornecedor = $2 AND status_vinculo = true`, [id, id_fornecedor]
     );
 
     if (vinculo.rowCount === 0) {
