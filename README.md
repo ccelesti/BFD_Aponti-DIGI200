@@ -320,16 +320,10 @@ As rotas podem ser testadas e visualizadas através da nossa documentação inte
 ## 📄 Licença
 Este projeto está licenciado sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para mais informações.
 
---- 
-
-## ✨ Autoria
-Projeto desenvolvido pelo grupo DIGI-200
-[*Bolsa Futuro Digital*](https://aponti.org.br/capital-humano#programa-bfd) – [*Aponti*](https://aponti.org.br/)
-
 ---
 
 ## 🎓 Programa, Apoio e Formação
 **Bolsa Futuro Digital – Aponti**  
-Turma 33 PE C1
-Professora: _Kathlyn Letícia dos Santos_
-Site: https://aponti.org.br/
+- Turma 33 PE C1
+- Professora: _Kathlyn Letícia dos Santos_
+- Site: https://aponti.org.br/
