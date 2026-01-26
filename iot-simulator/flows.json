@@ -88,7 +88,7 @@
         "type": "function",
         "z": "ed92b1b71e656011",
         "name": "atualizacao_nivel_gas",
-        "func": "let db_local = global.get(\"data_base_local\") || {};\nlet id = msg.miniDB.id_sensor;\n\nif (db_local[id]) {\n    // 1. Simula o consumo\n    let consumo = Math.floor(Math.random() * 41) + 10;  \n\n    if (db_local[id].pesoBruto > db_local[id].pesoTara) {\n        db_local[id].pesoBruto -= consumo;\n    }\n\n    if (db_local[id].pesoBruto < db_local[id].pesoTara) {\n        db_local[id].pesoBruto = db_local[id].pesoTara;\n    }\n\n    global.set(\"data_base_local\", db_local);\n\n    // PREPARAÇÃO HTTP REQUEST\n    msg.url = `http://localhost:3001/sensores/${id}/leituraNivelSensor`; \n    \n    \n    msg.payload = {\n        peso_atual: db_local[id].pesoBruto - db_local[id].pesoTara \n    };\n    \n    // Atualiza o miniDB para a próxima volta do loop\n    msg.miniDB.pesoBruto = db_local[id].pesoBruto;\n}\n\nreturn msg;",
+        "func": "let db_local = global.get(\"data_base_local\") || {};\nlet id = msg.miniDB.id_sensor;\n\nif (db_local[id]) {\n    // 1. Simula o consumo\n    let consumo = Math.floor(Math.random() * 41) + 10;  \n\n    if (db_local[id].pesoBruto > db_local[id].pesoTara) {\n        db_local[id].pesoBruto -= consumo;\n    }\n\n    if (db_local[id].pesoBruto < db_local[id].pesoTara) {\n        db_local[id].pesoBruto = db_local[id].pesoTara;\n    }\n\n    global.set(\"data_base_local\", db_local);\n\n    // PREPARAÇÃO HTTP REQUEST\n    msg.url = `http://api:3001/sensor/sensores/${id}/leituras`; \n    \n    \n    msg.payload = {\n        peso_atual: db_local[id].pesoBruto - db_local[id].pesoTara \n    };\n    \n    // Atualiza o miniDB para a próxima volta do loop\n    msg.miniDB.pesoBruto = db_local[id].pesoBruto;\n}\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -123,7 +123,8 @@
         "y": 440,
         "wires": [
             [
-                "fd3fba57a84c4c74"
+                "fd3fba57a84c4c74",
+                "6ad987d0470e7fd7"
             ]
         ]
     },
@@ -147,7 +148,8 @@
         "y": 580,
         "wires": [
             [
-                "ec69dc54abb2793c"
+                "ec69dc54abb2793c",
+                "f6474043204261e1"
             ]
         ]
     },
@@ -250,7 +252,7 @@
         "type": "function",
         "z": "ed92b1b71e656011",
         "name": "status_cliente",
-        "func": "\nconst id_cliente = msg.miniDB.id_cliente;\nconst id_sensor = msg.miniDB.id_sensor;\nconst status = \"Vazio\";\n\nmsg.url = `http://localhost:3001/sensores/cliente/${id_cliente}/${id_sensor}`;\nmsg.payload = {}; // Params vão na URL, então o body pode ser vazio\nreturn msg;",
+        "func": "\nconst id_cliente = msg.miniDB.id_cliente;\nconst id_sensor = msg.miniDB.id_sensor;\nconst status = \"Vazio\";\n\nmsg.url = `http://api:3001/sensor/clientes/${id_cliente}/sensores/${id_sensor}/status`;\nmsg.payload = {}; // Params vão na URL, então o body pode ser vazio\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -290,7 +292,7 @@
         "type": "http request",
         "z": "ed92b1b71e656011",
         "name": "Reiniciar_Sensor",
-        "method": "POST",
+        "method": "PUT",
         "ret": "obj",
         "paytoqs": "ignore",
         "url": "",
@@ -500,7 +502,7 @@
         "type": "function",
         "z": "ed92b1b71e656011",
         "name": "valore_parametro_reinicio",
-        "func": "\nconst id_sensor = msg.miniDB.id_sensor;\n\nmsg.url = `http://localhost:3001/sensores/${id_sensor}/reinicializarSensor`;\nmsg.payload = {}; \nreturn msg;",
+        "func": "\nconst id_sensor = msg.miniDB.id_sensor;\n\nmsg.url = `http://api:3001/sensor/sensores/${id_sensor}/reset`;\nmsg.payload = {}; \nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -549,7 +551,7 @@
         "type": "http request",
         "z": "ed92b1b71e656011",
         "name": "Cancelando_fluxo",
-        "method": "GET",
+        "method": "PUT",
         "ret": "obj",
         "paytoqs": "ignore",
         "url": "",
@@ -571,7 +573,7 @@
         "type": "function",
         "z": "ed92b1b71e656011",
         "name": "function 2",
-        "func": "// Atualizar status -> cancelar fluxo (exemplo de Function node antes do HTTP Request)\nconst id_cliente = msg.miniDB?.id_cliente;\nconst id_sensor = msg.miniDB?.id_sensor;\n\nif (!id_cliente || !id_sensor) {\n    node.error(\"Faltando id_cliente ou id_sensor para cancelar\");\n    return null;\n}\n\nmsg.url = `http://localhost:3001/sensores/status/renovar/${id_cliente}`;\nmsg.method = \"POST\";\nmsg.payload = {\n    id_sensor: id_sensor,\n    status_uso: false\n};\nreturn msg;",
+        "func": "// Atualizar status -> cancelar fluxo (exemplo de Function node antes do HTTP Request)\nconst id_cliente = msg.miniDB?.id_cliente;\nconst id_sensor = msg.miniDB?.id_sensor;\n\nif (!id_cliente || !id_sensor) {\n    node.error(\"Faltando id_cliente ou id_sensor para cancelar\");\n    return null;\n}\n\nmsg.url = `http://api:3001/sensor/clientes/${id_cliente}/sensores/${id_sensor}/status`;\nmsg.method = \"PUT\";\nmsg.payload = {\n    id_sensor: id_sensor,\n    status_uso: false\n};\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -592,7 +594,7 @@
         "z": "ed92b1b71e656011",
         "name": "",
         "pauseType": "delay",
-        "timeout": "20",
+        "timeout": "10",
         "timeoutUnits": "seconds",
         "rate": "1",
         "nbRateUnits": "1",
@@ -610,5 +612,39 @@
                 "fee61327a61569ae"
             ]
         ]
+    },
+    {
+        "id": "f6474043204261e1",
+        "type": "debug",
+        "z": "ed92b1b71e656011",
+        "name": "vizualizar_deploy",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 2270,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "6ad987d0470e7fd7",
+        "type": "debug",
+        "z": "ed92b1b71e656011",
+        "name": "vizualizar_status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1380,
+        "y": 340,
+        "wires": []
     }
 ]

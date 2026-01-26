@@ -17,6 +17,6 @@ router.get("/bairros", listarBairros);
 router.use('/clientes', clienteRoutes);
 router.use('/fornecedores', fornecedorRoutes); 
 router.use('/vinculos', vinculosRoutes); 
-router.use('/sensores', sensorRoutes);
+router.use('/sensor', sensorRoutes);
 
 export default router;

@@ -19,11 +19,16 @@ function extractErrorInfo(err: unknown): { message: string; data?: any } {
 }
 
 /**
- * Recebe uma leitura de nível do sensor e persiste o percentual calculado.
- *
- * Rota: POST /sensores/:id_sensor/leituraNivelSensor
- *
- * Body: { peso_atual }
+ * Recebe uma leitura de nível (peso) do sensor, calcula o percentual de gás restante
+ * e persiste os dados na tabela de histórico de leituras.
+ * * A função aplica uma heurística para distinguir se o peso recebido é Bruto (Gás + Tara)
+ * ou Líquido (Apenas Gás), normalizando o valor antes do cálculo.
+ * * @route POST /sensores/:id_sensor/leituraNivelSensor
+ * * @param {Request} req - Objeto de requisição do Express.
+ * @param {string} req.params.id_sensor - ID do sensor que enviou a leitura.
+ * @param {number} req.body.peso_atual - O peso lido pela balança (em gramas).
+ * @param {Response} res - Objeto de resposta do Express.
+ * * @returns {Promise<Response>} Retorna um JSON com os dados processados e a previsão de dias.
  */
 export async function receberLeituraNivelSensor(req: Request, res: Response) {
   try {
@@ -96,13 +101,16 @@ export async function receberLeituraNivelSensor(req: Request, res: Response) {
 }
 
 /**
- * Cadastra um novo sensor e tenta notificar o Node-RED.
- *
- * Rota: POST /sensores/cadastrarNovoSensor
- * Body: { id_sensor, id_cliente, tipo_gas }
- *
- * Notificação ao Node-RED é tentada; se falhar, o cadastro NÃO é abortado.
- * Opcionalmente registra falha em notification_failures para retry.
+ * Cadastra um novo sensor no banco de dados e inicia o monitoramento no Node-RED.
+ * * Caso a comunicação com o Node-RED falhe, o sensor é salvo no banco, mas a falha
+ * é registrada na tabela `notification_failures` para tentativa posterior (retry pattern).
+ * * @route POST /sensores/cadastrarNovoSensor
+ * * @param {Request} req - Objeto de requisição do Express.
+ * @param {number} req.body.id_sensor - ID único do sensor (físico).
+ * @param {number} req.body.id_cliente - ID do cliente proprietário.
+ * @param {string} req.body.tipo_gas - Tipo do botijão (ex: "P13", "P45").
+ * @param {Response} res - Objeto de resposta do Express.
+ * * @returns {Promise<Response>} JSON confirmando o cadastro.
  */
 export async function cadastroNovoSensor(req: Request, res: Response) {
   try {
@@ -175,10 +183,17 @@ export async function cadastroNovoSensor(req: Request, res: Response) {
 }
 
 /**
- * Reinicializa um sensor: atualiza data_ultima_troca, marca status_uso=true,
- * insere leitura 100% e notifica Node-RED (em try/catch).
- *
- * Rota: PUT /sensores/:id_sensor/reinicializarSensor
+ * Reinicializa o ciclo de vida de um sensor (troca do botijão).
+ * * Ações realizadas:
+ * 1. Atualiza `data_ultima_troca` para o momento atual.
+ * 2. Define `status_uso` como true.
+ * 3. Insere uma leitura fictícia de 100% no histórico.
+ * 4. Notifica o Node-RED para resetar os parâmetros de monitoramento.
+ * * @route PUT /sensores/:id_sensor/reinicializarSensor
+ * * @param {Request} req - Objeto de requisição do Express.
+ * @param {string} req.params.id_sensor - ID do sensor a ser resetado.
+ * @param {Response} res - Objeto de resposta do Express.
+ * * @returns {Promise<Response>} JSON confirmando a renovação.
  */
 export async function reinicializarSensor(req: Request, res: Response) {
   try {
@@ -253,9 +268,13 @@ export async function reinicializarSensor(req: Request, res: Response) {
 }
 
 /**
- * Verifica o estado do sensor para um cliente (se está renovado ou em espera).
- *
- * Rota: GET /sensores/cliente/:id_cliente/:id_sensor
+ * Verifica o estado atual de uso do sensor (Renovado/Em uso ou Em espera).
+ * * @route GET /sensores/cliente/:id_cliente/:id_sensor
+ * * @param {Request} req - Objeto de requisição do Express.
+ * @param {string} req.params.id_cliente - ID do cliente.
+ * @param {string} req.params.id_sensor - ID do sensor.
+ * @param {Response} res - Objeto de resposta do Express.
+ * * @returns {Promise<Response>} JSON com o status.
  */
 export async function verficarEstadoCliente(req: Request, res: Response) {
   try {
@@ -281,10 +300,13 @@ export async function verficarEstadoCliente(req: Request, res: Response) {
 }
 
 /**
- * Atualiza o campo `status_uso` de um sensor (renovado / em espera).
- *
- * Rota: PUT /sensores/status/:id_cliente/:id_sensor
- * Body: { status_uso: boolean }
+ * Verifica o estado atual de uso do sensor (Renovado/Em uso ou Em espera).
+ * * @route GET /sensores/cliente/:id_cliente/:id_sensor
+ * * @param {Request} req - Objeto de requisição do Express.
+ * @param {string} req.params.id_cliente - ID do cliente.
+ * @param {string} req.params.id_sensor - ID do sensor.
+ * @param {Response} res - Objeto de resposta do Express.
+ * * @returns {Promise<Response>} JSON com o status.
  */
 export async function renovarStatusSensor(req: Request, res: Response) {
   try {
