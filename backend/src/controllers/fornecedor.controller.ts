@@ -205,7 +205,6 @@ export async function privacidadeFornecedor(req: Request, res: Response) {
   }
 }
 
-
 /**
  * Adiciona horário(s) de funcionamento de um fornecedor específico por dia da semana.
  * Cada fornecedor pode cadastrar um horário de abertura e fechamento para cada dia da semana (1 = Segunda, 7 = Domingo).
@@ -213,7 +212,7 @@ export async function privacidadeFornecedor(req: Request, res: Response) {
  * @route POST /fornecedores/:id/horarios
  * @param {string} req.params.id - ID do fornecedor.
  * @param {Array<Object>} req.body - Lista de horários de funcionamento do fornecedor.
- * @param {number} req.body[].dia_funcionamento - Dia da semana (1 a 7).
+ * @param {number} req.body[].dia_funcionamento - Dia da semana (1 = Segunda, 7 = Domingo).
  * @param {time} req.body[].horario_inicio - Horário de início (formato HH:mm).
  * @param {time} req.body[].horario_termino - Horário de término (formato HH:mm).
  */
@@ -285,7 +284,7 @@ export async function adicionarHorarioFuncionamento(req: Request, res: Response)
  * @route PUT /fornecedores/:id/horarios
  * @param {string} req.params.id - ID do fornecedor.
  * @param {Array<Object>} req.body - Lista de horários de funcionamento.
- * @param {number} req.body[].dia_funcionamento - Dia da semana (0 = domingo, 6 = sábado).
+ * @param {number} req.body[].dia_funcionamento - Dia da semana (1 = Segunda, 7 = Domingo).
  * @param {string} req.body[].horario_inicio - Horário de abertura (HH:mm).
  * @param {string} req.body[].horario_termino - Horário de fechamento (HH:mm).
  */
@@ -338,6 +337,8 @@ export async function alterarHorarioFuncionamento(req: Request, res: Response) {
 
 /**
  * Lista os horários de funcionamento de um fornecedor específico.
+ * Os horários são ordenados pelo dia da semana (1 = Segunda a 7 = Domingo).
+ *
  * @route GET /fornecedores/:id/horarios
  * @param {string} req.params.id - ID do fornecedor.
  */
@@ -371,7 +372,7 @@ export async function listarHorariosFuncionamento(req: Request, res: Response) {
  * Remove o horário de funcionamento de um fornecedor de um dia específico.
  * @route DELETE /fornecedores/:id/horarios/:dia
  * @param {string} req.params.id - ID do fornecedor.
- * @param {string} req.params.dia - Dia da semana (1 a 7).
+ * @param {string} req.params.dia - Dia da semana (1 = Segunda, 7 = Domingo).
  */
 export async function removerHorarioFuncionamento(req: Request, res: Response) {
   try {
