@@ -9,6 +9,7 @@ services:
     environment:
     
       DATABASE_URL: ${DATABASE_URL}
+      NODE_RED_URL: "http://nodered:1880"
                      
 
   nodered:

@@ -7,7 +7,7 @@ router.post("/cadastrarNovoSensor", controleDoSensor.cadastroNovoSensor);
 router.post("/:id_sensor/leituraNivelSensor", controleDoSensor.receberLeituraNivelSensor);
 router.put("/:id_sensor/reinicializarSensor", controleDoSensor.reinicializarSensor);
 router.get("/cliente/:id_cliente/:id_sensor", controleDoSensor.verficarEstadoCliente);
-router.post("/status/renovar/:id_cliente", controleDoSensor.renovarStatusSensor);
+router.put("/status/renovar/:id_cliente/:id_sensor", controleDoSensor.renovarStatusSensor);
 
 
 export default router;
