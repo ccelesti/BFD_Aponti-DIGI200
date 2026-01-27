@@ -7,7 +7,9 @@
 
 <br>
 
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)   [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)   [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)   [![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)   [![License](https://img.shields.io/badge/License-MIT-red.svg)](LICENSE) [![Postman Documentation](https://img.shields.io/badge/Postman-Documentation-FF6C37?style=for-the-badge&logo=postman&logoColor=white)](https://documenter.getpostman.com/view/51751781/2sBXVkCA7p)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)   [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)   [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)   [![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)   [![License](https://img.shields.io/badge/License-MIT-red.svg)](LICENSE) 
+
+[![Postman Documentation](https://img.shields.io/badge/Postman-Documentation-FF6C37?style=for-the-badge&logo=postman&logoColor=white)](https://documenter.getpostman.com/view/51751781/2sBXVkCA7p)
 
 ## 📝 Descrição Geral
 O **BotijON** faz parte do _Projeto Integrador_, desenvolvido no contexto do programa **[*Bolsa Futuro Digital*](https://aponti.org.br/capital-humano#programa-bfd)**, promovido pela **[*Aponti - Pernambuco*](https://aponti.org.br/)**, como atividade de culminância da formação, pela equipe **DIGI-200**, da _Turma 33 PE C1 - Back-end Node.js_.
@@ -27,6 +29,7 @@ O sistema funciona como uma **API backend**, responsável por simular o monitora
 - [Contexto do MVP](#-contexto-do-mvp)
 - [Funcionalidades](#-funcionalidades)
 - [Tecnologias Utilizadas](#️-tecnologias-utilizadas)
+- [Equipe e Contribuições](#equipe-e-contribuições)
 - [Arquitetura do Projeto](#-arquitetura-do-projeto)
 - [Pré-requisitos](#-pré-requisitos)
 - [Como Executar o Projeto](#-como-executar-o-projeto)
@@ -34,7 +37,8 @@ O sistema funciona como uma **API backend**, responsável por simular o monitora
 - [Testes das Rotas](#-testes-das-rotas)
 - [Status do Projeto](#-status-do-projeto)
 - [Próximos Passos (Evoluções Futuras)](#-próximos-passos-evoluções-futuras)
-- [Equipe e Contribuições](#equipe-e-contribuições)
+- [Licença](#-licença)
+- [Programa, Apoio e Formação](#-programa-apoio-e-formação)
 
 ---
 
@@ -190,6 +194,7 @@ BFD_APONTI-DIGI200/
 ```
 
 ## Versão Resumida da Arquitetura
+
 ```bash
 back-end/
 ├── src/
@@ -212,12 +217,14 @@ Para executar o projeto, é necessário ter instalado:
 
 ## 🚀 Como Executar o Projeto
 ### 1️⃣ Clonar o repositório
+
 ```bash
 git clone [https://github.com/ccelesti/BFD_Aponti-DIGI200.git](https://github.com/ccelesti/BFD_Aponti-DIGI200.git)
 cd BFD_Aponti-DIGI200
 ```
 
 ### 2️⃣ Instalar as dependências
+
 ```bash
 npm install
 ```
@@ -225,7 +232,7 @@ npm install
 ### 3️⃣ Configurar variáveis de ambiente
 O projeto utiliza dois arquivos de variáveis de ambiente, separados por responsabilidade: um na raiz do projeto (infraestrutura) e outro no backend (API).
 
-📁 .env (raiz do projeto)
+> 📁 .env (raiz do projeto)
 
 Responsável pela configuração da infraestrutura Docker e Node-RED.
 
@@ -246,7 +253,7 @@ API_PORT=3000
 NODE_RED_PORT=1880
 ```
 
-📁 back-end/.env
+> 📁 back-end/.env
 
 Responsável exclusivamente pela API desenvolvida em Node.js/Express. Contém a string de conexão (DATABASE_URL) que permite à aplicação encontrar e se autenticar no banco de dados rodando no Docker.
 
@@ -261,18 +268,21 @@ DATABASE_URL=postgresql://admin:123@localhost:5432/bfd_database
 ```
 
 ### 4️⃣ Executar em modo desenvolvimento
+
 ```bash
 npm run dev
 ```
 
 ### 5️⃣ Build e execução em produção
+
 ```bash
 npm run build
 npm start
 ```
 
-## 6️⃣ Execução com Docker Compose (novo e essencial)
+### 6️⃣ Execução com Docker Compose (novo e essencial)
 Na raiz do projeto, execute o comando:
+
 ```bash
 docker compose up -d
 ```
@@ -285,7 +295,7 @@ Esse comando irá:
 ---
 
 ## 🔗 Principais Rotas da API
-A API segue o padrão RESTful. Abaixo estão os principais *endpoints* disponíveis, organizados por domínio. As rotas podem visualizadas por completo e testadas através da nossa documentação interativa via Postman: 
+Nossa API segue o padrão RESTful. Abaixo estão os principais ***endpoints*** disponíveis, organizados por domínio. As rotas podem visualizadas por completo e testadas através da nossa documentação interativa via Postman: 
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/51751781/2sBXVkCA7p)
 
@@ -332,6 +342,7 @@ Rotas utilizadas para a simulação de leitura do nível de gás de cozinha.
 Antes de iniciar os testes, certifique-se de que o ambiente está configurado:
 
 1. **Inicie a API:** O servidor deve estar rodando localmente.
+
    ```bash
    npm run dev
    # ou
