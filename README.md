@@ -7,10 +7,12 @@
 
 <br>
 
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)   [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)   [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)   [![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)   [![License](https://img.shields.io/badge/License-MIT-red.svg)](LICENSE)    
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)   [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)   [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)   [![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)   [![License](https://img.shields.io/badge/License-MIT-red.svg)](LICENSE) 
+
+[![Postman Documentation](https://img.shields.io/badge/Postman-Documentation-FF6C37?style=for-the-badge&logo=postman&logoColor=white)](https://documenter.getpostman.com/view/51751781/2sBXVkCA7p)
 
 ## 📝 Descrição Geral
-O **BotijON** faz parte do _Projeto Integrador_ desenvolvido no contexto do programa **[*Bolsa Futuro Digital*](https://aponti.org.br/capital-humano#programa-bfd)**, promovido pela **[*Aponti - Pernambuco*](https://aponti.org.br/)**, como atividade de culminância da formação, pela equipe **DIGI-200**, da _Turma 33 PE C1 - Back-end Node.js_.
+O **BotijON** faz parte do _Projeto Integrador_, desenvolvido no contexto do programa **[*Bolsa Futuro Digital*](https://aponti.org.br/capital-humano#programa-bfd)**, promovido pela **[*Aponti - Pernambuco*](https://aponti.org.br/)**, como atividade de culminância da formação, pela equipe **DIGI-200**, da _Turma 33 PE C1 - Back-end Node.js_.
 
 O sistema funciona como uma **API backend**, responsável por simular o monitoramento do consumo de gás de cozinha em uma residência, e atuando como **ponte de comunicação** entre **clientes** e **fornecedores**, com foco em:
 - organização da arquitetura backend;
@@ -27,6 +29,7 @@ O sistema funciona como uma **API backend**, responsável por simular o monitora
 - [Contexto do MVP](#-contexto-do-mvp)
 - [Funcionalidades](#-funcionalidades)
 - [Tecnologias Utilizadas](#️-tecnologias-utilizadas)
+- [Equipe e Contribuições](#equipe-e-contribuições)
 - [Arquitetura do Projeto](#-arquitetura-do-projeto)
 - [Pré-requisitos](#-pré-requisitos)
 - [Como Executar o Projeto](#-como-executar-o-projeto)
@@ -34,7 +37,8 @@ O sistema funciona como uma **API backend**, responsável por simular o monitora
 - [Testes das Rotas](#-testes-das-rotas)
 - [Status do Projeto](#-status-do-projeto)
 - [Próximos Passos (Evoluções Futuras)](#-próximos-passos-evoluções-futuras)
-- [Equipe e Contribuições](#equipe-e-contribuições)
+- [Licença](#-licença)
+- [Programa, Apoio e Formação](#-programa-apoio-e-formação)
 
 ---
 
@@ -113,11 +117,14 @@ Nesse contexto, foram aplicados conhecimentos relacionados a:
 
 | Nome | Contribuição | Roles | Linkedin | Github |
 |------|--------------|-------|----------|--------|
-| **Camila Moura** | **Gestão do Projeto:** condução de reuniões, definição de pautas, mediação com o cliente e liderança do time; **Concepção do Produto:** brainstorming, reuniões com o cliente e sugestões no protótipo (Figma); **Planejamento e Backlog:** organização e priorização do backlog no Trello, padronização de requisitos e revisão das contribuições; **Documentação:** consolidação da versão inicial, reconstrução da documentação final, redefinição dos requisitos funcionais e ajuste do escopo do MVP; **Banco de Dados:** modelagem, definição de tabelas e relacionamentos, scripts SQL, população via pgAdmin/PostgreSQL e via requisições HTTP, integração do PostgreSQL com a API; **Arquitetura Backend:** definição do padrão MVC, escolha das tecnologias e organização da estrutura do projeto. | Product Owner, Líder Técnica, Desenvolvedora Backend | [/camilacelestino](https://www.linkedin.com/in/camilacelestino) | [/ccelesti](https://github.com/ccelesti) |
-| **Ruberval Brasileiro** | **Concepção do Produto:** participação em brainstormings e reuniões com o cliente; **Planejamento e Organização:** apoio nos próximos passos do projeto e atuação informal como vice-líder; **Documentação:** elaboração da versão inicial, pesquisa da lógica de negócio e apoio à modelagem conceitual; **Protótipo (Figma):** criação de fluxos de telas e ajustes conforme feedback do time; **Desenvolvimento Backend:** implementação de validações de dados; **Apoio à Equipe:** orientação sobre uso do Trello e Google Docs. | Design & Dev Team | [/ruberval-brasileiro](https://www.linkedin.com/in/ruberval-brasileiro-5996a7324/) | [/rubervalbrasileiro](https://github.com/rubervalbrasileiro) |
-| **Cícera Maria** | **Concepção do Produto:** participação em brainstormings e reuniões com o cliente; **Planejamento e Backlog:** apoio na construção e organização do backlog no Trello; **Documentação:** suporte na elaboração da documentação final, com transcrição e organização dos requisitos funcionais (RF) e não funcionais (RNF). | Docs Team | — | [/ciceradevback](https://github.com/ciceradevback) |
-| **Adriel Gomes** | **Concepção do Produto:** participação em brainstormings, reuniões com o cliente e sugestões no protótipo (Figma); **Desenvolvimento Backend:** desenvolvimento de funções e lógica relacionadas ao sensor virtual do botijão de gás. | Dev Team | [/adriel-gomes](https://www.linkedin.com/in/adriel-gomes-472974218/) | [/Adriel-grs](https://github.com/Adriel-grs) |
-| **João Henrique** | **Concepção do Produto:** participação em brainstormings e reuniões com o cliente; **Gestão Inicial do Projeto:** atuação como líder no início do projeto, conduzindo reuniões e organizando as primeiras atividades; **Documentação:** apoio na construção da primeira versão da documentação. *(Posteriormente desligou-se do projeto durante a fase prática.)* | Líder Inicial | [/joao-melo](https://www.linkedin.com/in/joao-melo16/) | [/Dev-JoaoMelo](https://github.com/Dev-JoaoMelo) |
+| **Camila Moura** | **Gestão do Projeto:** condução de reuniões, definição de pautas, mediação com o cliente e liderança do time; **Concepção do Produto:** brainstorming, reuniões com o cliente e sugestões no protótipo (Figma); **Planejamento e Backlog:** organização e priorização do backlog no Trello, padronização de requisitos e revisão das contribuições; **Documentação:** consolidação da versão inicial, reconstrução da documentação final, redefinição dos requisitos funcionais e ajuste do escopo do MVP, elaboração do README, documentação de rotas e controllers no Postman; **Banco de Dados:** modelagem, definição de tabelas e relacionamentos, scripts SQL, população via pgAdmin/PostgreSQL e via requisições HTTP, integração do PostgreSQL com a API; **Arquitetura Backend:** definição do padrão MVC, escolha das tecnologias e organização da estrutura do projeto. | Product Owner, Líder Técnica, Desenvolvedora Backend | [/camilacelestino](https://www.linkedin.com/in/camilacelestino) | [/ccelesti](https://github.com/ccelesti) |
+| **Ruberval Brasileiro** | **Concepção do Produto:** participação em brainstormings e reuniões com o cliente; **Planejamento e Organização:** apoio nos próximos passos do projeto e atuação informal como vice-líder; **Documentação:** elaboração da versão inicial da documentação técnica de requisitos, pesquisa da lógica de negócio e apoio à modelagem conceitual; **Protótipo (Figma):** criação de fluxos de telas e ajustes conforme feedback do time; **Desenvolvimento Backend:** desenvolvimento de validações de dados no backend; **Apoio à Equipe:** orientação sobre uso do Trello e Google Docs. | Design & Dev Team | [/ruberval-brasileiro](https://www.linkedin.com/in/ruberval-brasileiro-5996a7324/) | [/rubervalbrasileiro](https://github.com/rubervalbrasileiro) |
+| **Cícera Maria** | **Concepção do Produto:** participação em brainstormings e reuniões com o cliente; **Planejamento e Backlog:** apoio na organização do backlog no Trello; **Documentação:** suporte na elaboração da documentação final, com transcrição e organização dos requisitos conforme orientações da gestão. | Docs Team | [/ciceradevback](https://www.linkedin.com/in/ciceradevback) | [/ciceradevback](https://github.com/ciceradevback) |
+| **Adriel Gomes** | **Concepção do Produto:** participação em brainstormings, reuniões com o cliente e sugestões no protótipo (Figma); **Documentação:** auxílio na elaboração do README; **Desenvolvimento Backend:** desenvolvimento de funções e lógica relacionadas ao sensor virtual do botijão de gás. | Dev Team | [/adriel-gomes](https://www.linkedin.com/in/adriel-gomes-472974218/) | [/Adriel-grs](https://github.com/Adriel-grs) |
+| **João Henrique** | **Concepção do Produto:** participação em brainstormings e reuniões com o cliente; **Gestão Inicial do Projeto:** atuação como líder no início do projeto, conduzindo reuniões e organizando as primeiras atividades; **Documentação:** apoio na construção da primeira versão da documentação de requisitos. *(Posteriormente, desligou-se do projeto durante a fase prática.)* | Líder Inicial | [/joao-melo](https://www.linkedin.com/in/joao-melo16/) | [/Dev-JoaoMelo](https://github.com/Dev-JoaoMelo) |
+
+<!--- | **Adriel Gomes** | auxílio na elaboração do vídeo de demonstração do sistema. | Dev Team |
+| **Camila Moura** | Liderança do projeto, gestão das decisões técnicas, de escopo e prioridades, documentação técnica de requisitos, revisão e controle de qualidade geral; desenvolvimento e apresentação de slides e pitch, vídeo de demonstração do sistema. | Liderança / Dev & Docs Team | -->
 
 <br>
 
@@ -125,9 +132,9 @@ Nesse contexto, foram aplicados conhecimentos relacionados a:
 
 | Nome | Contribuição | Roles | Linkedin | Github |
 |------|--------------|-------|----------|--------|
-| **Gabriel Lucas** | **Documentação do Projeto:** participação ativa na reconstrução dos requisitos, discussões sobre regras de negócio e refinamento da documentação; **Banco de Dados:** acompanhamento da modelagem, sugestões técnicas, apoio na criação e execução de scripts SQL e criação de views para consultas do sistema; **Desenvolvimento Backend:** desenvolvimento de funções e lógica relacionadas ao domínio de Fornecedores. | Backend & Database Support | [/gabriel-lucas](https://www.linkedin.com/in/gabriel-lucas-de-oliveira-xavier-507564358/) | [/Ggeasy1574](https://github.com/Ggeasy1574) |
-| **Leonardo Rafael** | **Documentação do Projeto:** suporte técnico na reconstrução e validação dos requisitos e decisões de escopo; **Arquitetura e Tecnologias:** sugestões sobre banco de dados, arquitetura MVC, dependências e ferramentas de desenvolvimento; **Versionamento e Execução:** orientações sobre Git/GitHub e etapas iniciais de execução do projeto; **Comunicação e Apresentação:** apoio na elaboração do README, desenvolvimento dos slides do pitch e suporte à evolução da logotipo. | Consultoria Técnica, Documentação & Revisão| [/leonardorafael1604](https://www.linkedin.com/in/leonardorafael1604/) | [/LeonardoRDA1604](https://github.com/LeonardoRDA1604) |
-| **Samuel Victor** | **Documentação do Projeto:** apoio na etapa final de revisão e padronização da documentação, com melhoria da escrita, verificação de consistência das informações e adequação ao formato final, seguindo orientações da liderança. | Documentação & Revisão | [/samuel-victor](https://www.linkedin.com/in/samuel-victor-3426b3368/) | [/samuel-victorr](https://github.com/SamuelVictorr) |
+| **Gabriel Lucas** | **Documentação do Projeto:** participação ativa na reconstrução dos requisitos, discussões sobre regras de negócio e refinamento da documentação técnica de requisitos, documentação de rotas e controllers no Postman; **Banco de Dados:** suporte à modelagem do banco de dados, sugestões técnicas, apoio na criação e execução de scripts SQL e criação de views para consultas do sistema;  **Versionamento e Execução:** orientações sobre Git/GitHub; **Desenvolvimento Backend:** desenvolvimento de funções e lógica relacionadas ao domínio de Fornecedores. | Backend & Database Support | [/gabriel-lucas](https://www.linkedin.com/in/gabriel-lucas-de-oliveira-xavier-507564358/) | [/Ggeasy1574](https://github.com/Ggeasy1574) |
+| **Leonardo Rafael** | **Documentação do Projeto:** suporte técnico na reconstrução e validação dos requisitos e decisões de escopo da documentação técnica de requisitos; **Arquitetura e Tecnologias:** suporte na decisão de arquitetura MVC, definição de banco de dados, dependências e ferramentas de desenvolvimento; **Versionamento e Execução:** orientações sobre Git/GitHub e etapas iniciais de execução do projeto; **Comunicação e Apresentação:** apoio na elaboração do README, slides do pitch e suporte à evolução da logotipo. | Consultoria Técnica, Documentação & Revisão| [/leonardorafael1604](https://www.linkedin.com/in/leonardorafael1604/) | [/LeonardoRDA1604](https://github.com/LeonardoRDA1604) |
+| **Samuel Victor** | **Documentação do Projeto:** apoio na etapa final de revisão e padronização da documentação técnica de requisitos, com melhoria da escrita, verificação de consistência das informações e adequação ao formato final, seguindo orientações da liderança. | Documentação & Revisão | [/samuel-victor](https://www.linkedin.com/in/samuel-victor-3426b3368/) | [/samuel-victorr](https://github.com/SamuelVictorr) |
 | **Leandro Wilke** | **Identidade Visual:** melhorias na logotipo do projeto, com ajustes de definição, cores e tipografia, contribuindo para a identidade visual final. | Design Gráfico | [/leandro-wilke](https://www.linkedin.com/in/leandro-wilke/) | [/LeandroWilkeDev](https://github.com/LeandroWilkeDev) |
 
 ---
@@ -147,18 +154,25 @@ BFD_APONTI-DIGI200/
 │   │   │   ├── Logo/
 │   │   │   │   ├── BotijON.png   # Logotipo do BotijON
 │   │   ├── controllers/          # Lógica das requisições
+│   │   │   ├── bairrofornecedor.controller.ts
 │   │   │   ├── cliente.controller.ts
 │   │   │   ├── fornecedor.controller.ts
-│   │   │   ├── bairrofornecedor.controller.ts
-│   │   │   └── index.ts
+│   │   │   ├── index.ts
+│   │   │   ├── sensor.controller.ts
+│   │   │   └── vinculo.controller.ts
+│   │   │
+│   │   ├── database/             # Configuração do banco de dados
+│   │   │   └── db.ts
 │   │   │
 │   │   ├── routes/               # Definição das rotas da API
 │   │   │   ├── cliente.routes.ts
 │   │   │   ├── fornecedor.routes.ts
-│   │   │   └── index.ts
+│   │   │   ├── index.ts
+│   │   │   ├── sensor.routes.ts
+│   │   │   └── vinculo.routes.ts
 │   │   │
-│   │   ├── database/             # Configuração do banco de dados
-│   │   │   └── db.ts
+│   │   ├── services/             # 
+│   │   │   └── sensor.services.ts
 │   │   │
 │   │   ├── app.ts                # Configuração principal da aplicação
 │   │   └── models.ts             # Tipagens / interfaces
@@ -180,6 +194,7 @@ BFD_APONTI-DIGI200/
 ```
 
 ## Versão Resumida da Arquitetura
+
 ```bash
 back-end/
 ├── src/
@@ -202,12 +217,14 @@ Para executar o projeto, é necessário ter instalado:
 
 ## 🚀 Como Executar o Projeto
 ### 1️⃣ Clonar o repositório
+
 ```bash
 git clone [https://github.com/ccelesti/BFD_Aponti-DIGI200.git](https://github.com/ccelesti/BFD_Aponti-DIGI200.git)
 cd BFD_Aponti-DIGI200
 ```
 
 ### 2️⃣ Instalar as dependências
+
 ```bash
 npm install
 ```
@@ -215,9 +232,9 @@ npm install
 ### 3️⃣ Configurar variáveis de ambiente
 O projeto utiliza dois arquivos de variáveis de ambiente, separados por responsabilidade: um na raiz do projeto (infraestrutura) e outro no backend (API).
 
-📁 .env (raiz do projeto)
+> 📁 .env (raiz do projeto)
 
-Responsável pela configuração da infraestrutura Docker, banco de dados e Node-RED.
+Responsável pela configuração da infraestrutura Docker e Node-RED.
 
 Crie o arquivo `.env` na raiz do projeto com base em `.env.example`:
 
@@ -236,9 +253,9 @@ API_PORT=3000
 NODE_RED_PORT=1880
 ```
 
-📁 back-end/.env
+> 📁 back-end/.env
 
-Responsável exclusivamente pela API desenvolvida em Node.js/Express.
+Responsável exclusivamente pela API desenvolvida em Node.js/Express. Contém a string de conexão (DATABASE_URL) que permite à aplicação encontrar e se autenticar no banco de dados rodando no Docker.
 
 Crie o arquivo `back-end/.env` com base em `back-end/.env.example`:
 
@@ -251,18 +268,21 @@ DATABASE_URL=postgresql://admin:123@localhost:5432/bfd_database
 ```
 
 ### 4️⃣ Executar em modo desenvolvimento
+
 ```bash
 npm run dev
 ```
 
 ### 5️⃣ Build e execução em produção
+
 ```bash
 npm run build
 npm start
 ```
 
-## 6️⃣ Execução com Docker Compose (novo e essencial)
+### 6️⃣ Execução com Docker Compose (novo e essencial)
 Na raiz do projeto, execute o comando:
+
 ```bash
 docker compose up -d
 ```
@@ -275,15 +295,60 @@ Esse comando irá:
 ---
 
 ## 🔗 Principais Rotas da API
-As rotas seguem o padrão REST e estão organizadas por domínio (clientes, fornecedores, endereços).
-👤 Clientes
+Nossa API segue o padrão RESTful. Abaixo estão os principais ***endpoints*** disponíveis, organizados por domínio. As rotas podem visualizadas por completo e testadas através da nossa documentação interativa via Postman: 
 
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/51751781/2sBXVkCA7p)
+
+### 👤 Clientes (`/clientes`)
+| Método | Endpoint | Descrição |
+|---|---|---|
+| **POST** | `/clientes` | Cadastra um novo cliente no sistema. |
+| **GET** | `/clientes` | Lista todos os clientes cadastrados. |
+| **GET** | `/clientes/:id` | Retorna os dados de um cliente específico pelo ID. |
+| **PUT** | `/clientes/:id` | Atualiza as informações cadastrais de um cliente. |
+| **DELETE** | `/clientes/:id` | Remove um cliente da base de dados. |
+
+### 🚚 Fornecedores (`/fornecedores`)
+| Método | Endpoint | Descrição |
+|---|---|---|
+| **POST** | `/fornecedores` | Cadastra um novo fornecedor de gás. |
+| **GET** | `/fornecedores` | Lista todos os fornecedores disponíveis. |
+| **GET** | `/fornecedores/:id` | Busca um fornecedor específico pelo ID. |
+| **PUT** | `/fornecedores/:id` | Atualiza os dados de um fornecedor. |
+| **DELETE** | `/fornecedores/:id` | Remove um fornecedor do sistema. |
+
+### 🤝 Vínculos e Permissões (`/vinculos`)
+Gerencia a relação entre clientes e fornecedores (ex: permissão de contato).
+| Método | Endpoint | Descrição |
+|---|---|---|
+| **POST** | `/vinculos` | Cadastra um vínculo/autorização entre cliente e fornecedor. |
+| **PUT** | `/vinculos` | Atualiza vínculo entre cliente e fornecedor. |
+| **DELETE** | `/vinculos` | Revoga o vínculo entre as partes. |
+
+### 🎛️ Sensor (`/sensor`)
+Rotas utilizadas para a simulação de leitura do nível de gás de cozinha.
+| Método | Endpoint | Descrição |
+|---|---|---|
+| **POST** | `/sensores/:id_sensor/leituras` | Recebe os dados simulados do nível de gás (via Node-RED). |
+| **GET** | `/clientes/:id_cliente/sensores/:id_sensor/status` | Consulta o nível atual de gás de um cliente. |
 ---
 
 ## 🧪 Testes das Rotas
-As rotas podem ser testadas com:
-- Thunder Client (Extensão do VS Code)
-- Postman (Coleções documentadas)
+É possível testar a nossa API utilizando o:
+- **Thunder Client** (recomendado para testes rápidos no VS Code)
+- **Postman** (recomendado para documentação completa)
+
+### Instruções para Teste Local:
+Antes de iniciar os testes, certifique-se de que o ambiente está configurado:
+
+1. **Inicie a API:** O servidor deve estar rodando localmente.
+
+   ```bash
+   npm run dev
+   # ou
+   docker compose up
+
+2. **Base URL:** A API estará rodando no endereço padrão: http://localhost:3001
 
 ---
 
@@ -308,16 +373,10 @@ As rotas podem ser testadas com:
 ## 📄 Licença
 Este projeto está licenciado sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para mais informações.
 
---- 
-
-## ✨ Autoria
-Projeto desenvolvido pelo grupo DIGI-200
-[*Bolsa Futuro Digital*](https://aponti.org.br/capital-humano#programa-bfd) – [*Aponti*](https://aponti.org.br/)
-
 ---
 
 ## 🎓 Programa, Apoio e Formação
 **Bolsa Futuro Digital – Aponti**  
-Turma 33 PE C1
-Professora: _Kathlyn Letícia dos Santos_
-Site: https://aponti.org.br/
+- Turma 33 PE C1
+- Professora: _Kathlyn Letícia dos Santos_
+- Site: https://aponti.org.br/
