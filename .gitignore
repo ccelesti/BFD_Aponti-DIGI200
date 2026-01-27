@@ -1,4 +1,24 @@
-node_modules/
-.npm
+
+# ===== Environment variables =====
 .env
+.env.*
+!.env.example
 dist
+
+# ===== Node =====
+node_modules/
+npm-debug.log*
+.npm
+
+# ===== Docker =====
+pgdata/
+
+# ===== Node-RED / IoT =====
+settings.js
+.config.*
+*.backup
+iot-simulator/.config.*
+iot-simulator/data/
+
+# ===== OS =====
+.DS_Store

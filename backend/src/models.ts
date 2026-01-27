@@ -14,6 +14,7 @@ export interface Cliente {
   criado_em?: string;
   atualizado_em?: string;
   status_cliente?: boolean;
+  //status_iot_cliente: string;
 }
 export type ClienteExibicao = Omit<Cliente, 'senha_hash'>;
 
@@ -79,3 +80,21 @@ export interface BairroAtendidoFornecedor {
   id_bairro: number;
 }
 
+export interface SensorMedicaoGas {
+  id_sensor: number;
+  id_cliente: number;
+  status_gas: string; //
+  status_iot_cliente?: string; 
+  tipo_gas?: string;
+  data_ultima_leitura?: Date;
+  nivel_ultima_leitura?: number;
+  media_consumo?: number;
+  data_ultima_troca: Date;
+}
+export interface LeituraSensor {
+  id_leitura: number;
+  id_sensor:number;
+  peso_atual: number;
+  previsao_dias?: number;
+  data_leitura?: Date;
+}

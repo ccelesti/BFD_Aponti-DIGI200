@@ -1,0 +1,6 @@
+settings.js
+.config.users.json
+.config.runtime.json
+*.backup
+node_modules/
+data/

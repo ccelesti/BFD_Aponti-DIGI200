@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  api:
+    build: ./backend      
+    container_name: bfd_api
+    ports:
+      - "${API_PORT}:3001"
+    environment:
+    
+      DATABASE_URL: ${DATABASE_URL}
+      NODE_RED_URL: "http://nodered:1880"
+                     
+
+  nodered:
+    image: nodered/node-red
+    container_name: bfd_nodered
+    ports:
+      - "${NODE_RED_PORT}:1880"
+    volumes:
+      - ./iot-simulator:/data
+    restart: always
+
+volumes:
+  pgdata:

@@ -1,0 +1,650 @@
+[
+    {
+        "id": "ed92b1b71e656011",
+        "type": "tab",
+        "label": "Fluxo 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7f24de0689b837af",
+        "type": "websocket-listener",
+        "path": "http:localhost:3001/sensores",
+        "wholemsg": "false"
+    },
+    {
+        "id": "c364f78eb11115a2",
+        "type": "websocket-client",
+        "path": "http://localhost:3001/sensores",
+        "tls": "",
+        "wholemsg": "false",
+        "hb": "",
+        "subprotocol": "http",
+        "headers": [
+            {
+                "keyType": "other",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": ""
+            }
+        ]
+    },
+    {
+        "id": "24910b238294dc6c",
+        "type": "function",
+        "z": "ed92b1b71e656011",
+        "name": "triagem_de_nivel",
+        "func": "try {\n    let id_sensor = msg.miniDB.id_sensor;\n    let db_local = global.get(\"data_base_local\") || {};\n\n    if (!db_local[id_sensor]) {\n        throw new Error(\"Sensor não encontrado na memória local\");\n    }\n\n    // Recuperação dados reais do banco global\n    let dados = db_local[id_sensor];\n    \n    // Peso Filtrado\n    let peso_filtrado = dados.pesoBruto - dados.pesoTara;\n    let peso_maximo = dados.pesoFluido; // Capacidade maxima: (exemplo: 13kg)\n\n    \n    msg.miniDB.leituraAtualLiquida = peso_filtrado;\n\n    // Lógica de Triagem\n    if (!dados.pesoBruto || dados.pesoBruto <= dados.pesoTara) {\n        msg.triagens = \"1\"; // Vazio ou Erro\n        return msg;\n    } else if (peso_filtrado >= peso_maximo) {\n        msg.triagens = \"2\"; // Cheio\n        return msg;\n    } else {\n        msg.triagens = \"2\"; // Operação normal\n        return msg;\n    }\n\n} catch (error) {\n    msg.error = true;\n    msg.error_details = error.message;\n    return msg;\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 500,
+        "wires": [
+            [
+                "36129f8ee62dd7da"
+            ]
+        ]
+    },
+    {
+        "id": "36129f8ee62dd7da",
+        "type": "switch",
+        "z": "ed92b1b71e656011",
+        "name": "triagem",
+        "property": "triagens",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 820,
+        "y": 500,
+        "wires": [
+            [
+                "2b2db79a2322546b"
+            ],
+            [
+                "c669191ef5230198"
+            ]
+        ]
+    },
+    {
+        "id": "c669191ef5230198",
+        "type": "function",
+        "z": "ed92b1b71e656011",
+        "name": "atualizacao_nivel_gas",
+        "func": "let db_local = global.get(\"data_base_local\") || {};\nlet id = msg.miniDB.id_sensor;\n\nif (db_local[id]) {\n    // 1. Simula o consumo\n    let consumo = Math.floor(Math.random() * 41) + 10;  \n\n    if (db_local[id].pesoBruto > db_local[id].pesoTara) {\n        db_local[id].pesoBruto -= consumo;\n    }\n\n    if (db_local[id].pesoBruto < db_local[id].pesoTara) {\n        db_local[id].pesoBruto = db_local[id].pesoTara;\n    }\n\n    global.set(\"data_base_local\", db_local);\n\n    // PREPARAÇÃO HTTP REQUEST\n    msg.url = `http://api:3001/sensor/sensores/${id}/leituras`; \n    \n    \n    msg.payload = {\n        peso_atual: db_local[id].pesoBruto - db_local[id].pesoTara \n    };\n    \n    // Atualiza o miniDB para a próxima volta do loop\n    msg.miniDB.pesoBruto = db_local[id].pesoBruto;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1700,
+        "y": 580,
+        "wires": [
+            [
+                "8510e25cbf568dde"
+            ]
+        ]
+    },
+    {
+        "id": "2a4433ccd2de66c3",
+        "type": "http request",
+        "z": "ed92b1b71e656011",
+        "name": "ler_status_sensor",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 1170,
+        "y": 440,
+        "wires": [
+            [
+                "fd3fba57a84c4c74",
+                "6ad987d0470e7fd7"
+            ]
+        ]
+    },
+    {
+        "id": "8510e25cbf568dde",
+        "type": "http request",
+        "z": "ed92b1b71e656011",
+        "name": "deploy",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 2110,
+        "y": 580,
+        "wires": [
+            [
+                "ec69dc54abb2793c",
+                "f6474043204261e1"
+            ]
+        ]
+    },
+    {
+        "id": "4f57f6acb0c493b8",
+        "type": "http in",
+        "z": "ed92b1b71e656011",
+        "name": "Iniciar_sensor",
+        "url": "/iniciar-monitoramento",
+        "method": "post",
+        "upload": false,
+        "skipBodyParsing": false,
+        "swaggerDoc": "",
+        "x": 90,
+        "y": 420,
+        "wires": [
+            [
+                "1b1f1aa2d8132244"
+            ]
+        ]
+    },
+    {
+        "id": "1b1f1aa2d8132244",
+        "type": "function",
+        "z": "ed92b1b71e656011",
+        "name": " Sart Sensor",
+        "func": "// Inicialização do miniDB \nlet info_recebidas = msg.req ? msg.req.body : (msg.payload || {});\nlet db_local = global.get(\"data_base_local\") || {};\n\nconst id = info_recebidas.id_sensor || info_recebidas.idSensor;\nif (!id) {\n    node.error(\"Payload de iniciar_monitoramento sem id_sensor\");\n    return msg;\n}\n\n//converter pesos para Number\nfunction toNum(v) {\n    if (v === undefined || v === null) return undefined;\n    const n = Number(v);\n    return isNaN(n) ? undefined : n;\n}\n\nconst pesoBrutoRaw = info_recebidas.peso_bruto ?? info_recebidas.pesoBruto;\nconst pesoTaraRaw  = info_recebidas.peso_tara  ?? info_recebidas.pesoTara;\nconst pesoFluidoRaw= info_recebidas.peso_fluido ?? info_recebidas.pesoFluido;\n\nconst pesoBruto = toNum(pesoBrutoRaw);\nconst pesoTara  = toNum(pesoTaraRaw);\nconst pesoFluido= toNum(pesoFluidoRaw);\n\nif (pesoBruto === undefined) {\n    node.warn(`Sensor ${id}: pesoBruto ausente ou inválido (${pesoBrutoRaw}). Armazenando como null.`);\n}\n\nif (pesoTara === undefined) {\n    node.warn(`Sensor ${id}: pesoTara ausente ou inválido (${pesoTaraRaw}).`);\n}\n\ndb_local[id] = {\n    id_sensor: id,\n    id_cliente: info_recebidas.id_cliente || info_recebidas.idCliente,\n    pesoBruto: pesoBruto === undefined ? null : pesoBruto,\n    pesoTara:  pesoTara  === undefined ? null : pesoTara,\n    pesoFluido:pesoFluido=== undefined ? null : pesoFluido,\n   \n    _lastUpdateAt: new Date().toISOString()\n};\n\nglobal.set(\"data_base_local\", db_local);\nmsg.miniDB = db_local[id];\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 420,
+        "wires": [
+            [
+                "92543fe47cce8de7",
+                "50c19570087da170"
+            ]
+        ]
+    },
+    {
+        "id": "92543fe47cce8de7",
+        "type": "http response",
+        "z": "ed92b1b71e656011",
+        "name": "Sensor_iniciado",
+        "statusCode": "200",
+        "headers": {},
+        "x": 440,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "de38be4fd2a2e10f",
+        "type": "link in",
+        "z": "ed92b1b71e656011",
+        "name": "Start_fluxo",
+        "links": [
+            "50c19570087da170",
+            "fee61327a61569ae",
+            "0dc67ec4487f4248"
+        ],
+        "x": 505,
+        "y": 500,
+        "wires": [
+            [
+                "24910b238294dc6c"
+            ]
+        ]
+    },
+    {
+        "id": "50c19570087da170",
+        "type": "link out",
+        "z": "ed92b1b71e656011",
+        "name": "Link Start Fluxo",
+        "mode": "link",
+        "links": [
+            "de38be4fd2a2e10f"
+        ],
+        "x": 435,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "fee61327a61569ae",
+        "type": "link out",
+        "z": "ed92b1b71e656011",
+        "name": "deploy",
+        "mode": "link",
+        "links": [
+            "de38be4fd2a2e10f"
+        ],
+        "x": 2385,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "2b2db79a2322546b",
+        "type": "function",
+        "z": "ed92b1b71e656011",
+        "name": "status_cliente",
+        "func": "\nconst id_cliente = msg.miniDB.id_cliente;\nconst id_sensor = msg.miniDB.id_sensor;\nconst status = \"Vazio\";\n\nmsg.url = `http://api:3001/sensor/clientes/${id_cliente}/sensores/${id_sensor}/status`;\nmsg.payload = {}; // Params vão na URL, então o body pode ser vazio\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 440,
+        "wires": [
+            [
+                "2a4433ccd2de66c3"
+            ]
+        ]
+    },
+    {
+        "id": "fd3fba57a84c4c74",
+        "type": "function",
+        "z": "ed92b1b71e656011",
+        "name": "Leitura_status",
+        "func": "\ntry {\n    // HTTP Request vem em msg.payload\n    const resp = msg.payload || {};\n    // Backend devolve { status: \"Renovado\" } ou { status: \"Em espera\" }\n    const status_recebido = resp.status || resp.status_gas || resp.message || \"\";\n\n    if (!status_recebido) {\n        throw new Error(\"Resposta de status vazia\");\n    }\n\n    const s = String(status_recebido).toLowerCase();\n\n    if (s === \"renovado\" || s === \"botijão renovado com sucesso!\" || s === \"renovado\") {\n        msg.triagens2 = \"1\";\n    } else if (s === \"em espera\" || s === \"análise\" || s === \"analise\") {\n        msg.triagens2 = \"2\";\n    } else if (s === \"cancelado\") {\n        msg.triagens2 = \"3\";\n    } else {\n        throw new Error(\"Valor de status inválido: \" + status_recebido);\n    }\n\n    return msg;\n} catch (error) {\n    node.error(\"Erro ao processar status: \" + error.message);\n    msg.payload = { error: \"Status não reconhecido\", details: error.message };\n    return msg;\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1380,
+        "y": 440,
+        "wires": [
+            [
+                "0cf019f8e519b56d"
+            ]
+        ]
+    },
+    {
+        "id": "4e5e3bb6a019f5b3",
+        "type": "http request",
+        "z": "ed92b1b71e656011",
+        "name": "Reiniciar_Sensor",
+        "method": "PUT",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 2130,
+        "y": 400,
+        "wires": [
+            [
+                "0847b32fb35e82c7"
+            ]
+        ]
+    },
+    {
+        "id": "4dcf64ec65f7c294",
+        "type": "delay",
+        "z": "ed92b1b71e656011",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1870,
+        "y": 440,
+        "wires": [
+            [
+                "d1875aca4b84aa5c"
+            ]
+        ]
+    },
+    {
+        "id": "0cf019f8e519b56d",
+        "type": "switch",
+        "z": "ed92b1b71e656011",
+        "name": "triagem_restart",
+        "property": "triagens2",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "3",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 1560,
+        "y": 440,
+        "wires": [
+            [
+                "a389e775e4d821bf"
+            ],
+            [
+                "2f9473e042a26662"
+            ],
+            [
+                "a825bae1b5eb1161"
+            ]
+        ]
+    },
+    {
+        "id": "a389e775e4d821bf",
+        "type": "link out",
+        "z": "ed92b1b71e656011",
+        "name": "reiniciar_sensor_out",
+        "mode": "link",
+        "links": [
+            "c4209a33e76834e4"
+        ],
+        "x": 1665,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "2f9473e042a26662",
+        "type": "link out",
+        "z": "ed92b1b71e656011",
+        "name": "esperar_status",
+        "mode": "link",
+        "links": [
+            "3e450f60802798b7"
+        ],
+        "x": 1665,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "a825bae1b5eb1161",
+        "type": "link out",
+        "z": "ed92b1b71e656011",
+        "name": "cancelar_fluxo_out",
+        "mode": "link",
+        "links": [
+            "864f1b1a365b05a7"
+        ],
+        "x": 1665,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "3e450f60802798b7",
+        "type": "link in",
+        "z": "ed92b1b71e656011",
+        "name": "esperar_sensor_in",
+        "links": [
+            "2f9473e042a26662"
+        ],
+        "x": 1765,
+        "y": 440,
+        "wires": [
+            [
+                "4dcf64ec65f7c294"
+            ]
+        ]
+    },
+    {
+        "id": "d1875aca4b84aa5c",
+        "type": "link out",
+        "z": "ed92b1b71e656011",
+        "name": "loop_status_out",
+        "mode": "link",
+        "links": [
+            "0acbc4942ec6492e"
+        ],
+        "x": 1975,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "c4209a33e76834e4",
+        "type": "link in",
+        "z": "ed92b1b71e656011",
+        "name": "reiniciar_sensor_in",
+        "links": [
+            "a389e775e4d821bf"
+        ],
+        "x": 1765,
+        "y": 400,
+        "wires": [
+            [
+                "f5773019ba6fbefc"
+            ]
+        ]
+    },
+    {
+        "id": "0acbc4942ec6492e",
+        "type": "link in",
+        "z": "ed92b1b71e656011",
+        "name": "loop_status",
+        "links": [
+            "d1875aca4b84aa5c"
+        ],
+        "x": 1045,
+        "y": 360,
+        "wires": [
+            [
+                "2a4433ccd2de66c3"
+            ]
+        ]
+    },
+    {
+        "id": "0847b32fb35e82c7",
+        "type": "function",
+        "z": "ed92b1b71e656011",
+        "name": "Repassando_valores",
+        "func": "// repassando valores (resposta do reinicializarSensor)\n// Espera que a resposta do backend esteja em msg.payload e contenha id_sensor, id_cliente, pesoBruto, pesoTara, pesoFluido\nlet info_recebidas = msg.payload || {};\nlet db_local = global.get(\"data_base_local\") || {};\n\nconst id = info_recebidas.id_sensor || info_recebidas.idSensor || info_recebidas.id;\n\nif (!id) {\n    node.warn(\"Resposta de reinicializarSensor sem id_sensor\");\n    return msg;\n}\n\ndb_local[id] = {\n    id_sensor: id,\n    id_cliente: info_recebidas.id_cliente || info_recebidas.idCliente || db_local[id]?.id_cliente,\n    pesoBruto: info_recebidas.pesoBruto ?? info_recebidas.peso_bruto ?? db_local[id]?.pesoBruto,\n    pesoTara: info_recebidas.pesoTara ?? info_recebidas.peso_tara ?? db_local[id]?.pesoTara,\n    pesoFluido: info_recebidas.pesoFluido ?? info_recebidas.peso_fluido ?? db_local[id]?.pesoFluido\n};\n\nglobal.set(\"data_base_local\", db_local);\nmsg.miniDB = db_local[id];\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2340,
+        "y": 400,
+        "wires": [
+            [
+                "0dc67ec4487f4248"
+            ]
+        ]
+    },
+    {
+        "id": "f5773019ba6fbefc",
+        "type": "function",
+        "z": "ed92b1b71e656011",
+        "name": "valore_parametro_reinicio",
+        "func": "\nconst id_sensor = msg.miniDB.id_sensor;\n\nmsg.url = `http://api:3001/sensor/sensores/${id_sensor}/reset`;\nmsg.payload = {}; \nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1910,
+        "y": 400,
+        "wires": [
+            [
+                "4e5e3bb6a019f5b3"
+            ]
+        ]
+    },
+    {
+        "id": "0dc67ec4487f4248",
+        "type": "link out",
+        "z": "ed92b1b71e656011",
+        "name": "link out 1",
+        "mode": "link",
+        "links": [
+            "de38be4fd2a2e10f"
+        ],
+        "x": 2485,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "864f1b1a365b05a7",
+        "type": "link in",
+        "z": "ed92b1b71e656011",
+        "name": "cancelar_fluxo_in",
+        "links": [
+            "a825bae1b5eb1161"
+        ],
+        "x": 1765,
+        "y": 480,
+        "wires": [
+            [
+                "4bf5fc4323be3edb"
+            ]
+        ]
+    },
+    {
+        "id": "bb6a81f8692a8d27",
+        "type": "http request",
+        "z": "ed92b1b71e656011",
+        "name": "Cancelando_fluxo",
+        "method": "PUT",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 2050,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4bf5fc4323be3edb",
+        "type": "function",
+        "z": "ed92b1b71e656011",
+        "name": "function 2",
+        "func": "// Atualizar status -> cancelar fluxo (exemplo de Function node antes do HTTP Request)\nconst id_cliente = msg.miniDB?.id_cliente;\nconst id_sensor = msg.miniDB?.id_sensor;\n\nif (!id_cliente || !id_sensor) {\n    node.error(\"Faltando id_cliente ou id_sensor para cancelar\");\n    return null;\n}\n\nmsg.url = `http://api:3001/sensor/clientes/${id_cliente}/sensores/${id_sensor}/status`;\nmsg.method = \"PUT\";\nmsg.payload = {\n    id_sensor: id_sensor,\n    status_uso: false\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1860,
+        "y": 480,
+        "wires": [
+            [
+                "bb6a81f8692a8d27"
+            ]
+        ]
+    },
+    {
+        "id": "ec69dc54abb2793c",
+        "type": "delay",
+        "z": "ed92b1b71e656011",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 2270,
+        "y": 580,
+        "wires": [
+            [
+                "fee61327a61569ae"
+            ]
+        ]
+    },
+    {
+        "id": "f6474043204261e1",
+        "type": "debug",
+        "z": "ed92b1b71e656011",
+        "name": "vizualizar_deploy",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 2270,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "6ad987d0470e7fd7",
+        "type": "debug",
+        "z": "ed92b1b71e656011",
+        "name": "vizualizar_status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1380,
+        "y": 340,
+        "wires": []
+    }
+]
