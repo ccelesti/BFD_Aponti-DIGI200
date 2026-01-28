@@ -19,98 +19,12 @@ function extractErrorInfo(err: unknown): { message: string; data?: any } {
 }
 
 /**
- * Recebe uma leitura de nível (peso) do sensor, calcula o percentual de gás restante
- * e persiste os dados na tabela de histórico de leituras.
- * * A função aplica uma heurística para distinguir se o peso recebido é Bruto (Gás + Tara)
- * ou Líquido (Apenas Gás), normalizando o valor antes do cálculo.
- * * @route POST /sensores/:id_sensor/leituraNivelSensor
- * * @param {Request} req - Objeto de requisição do Express.
- * @param {string} req.params.id_sensor - ID do sensor que enviou a leitura.
- * @param {number} req.body.peso_atual - O peso lido pela balança (em gramas).
- * @param {Response} res - Objeto de resposta do Express.
- * * @returns {Promise<Response>} Retorna um JSON com os dados processados e a previsão de dias.
- */
-export async function receberLeituraNivelSensor(req: Request, res: Response) {
-  try {
-    const { id_sensor } = req.params;
-    const { peso_atual } = req.body;
-
-    if (!id_sensor || peso_atual === undefined) {
-      return res.status(400).json({ error: "Payload inválido" });
-    }
-
-    const sensorInfo = await pool.query(
-      "SELECT tipo_gas, data_ultima_troca FROM Sensor WHERE id_sensor = $1",
-      [id_sensor]
-    );
-    if (sensorInfo.rowCount === 0) {
-      return res.status(404).json({ error: "Sensor não encontrado" });
-    }
-
-    const { tipo_gas, data_ultima_troca } = sensorInfo.rows[0];
-    const pesos = await serviceSensor.pesoMaxBotijaoGas(tipo_gas);
-
-    // Normalizar entrada
-    const incoming = Number(peso_atual);
-    if (Number.isNaN(incoming)) {
-      return res.status(400).json({ error: "peso_atual inválido" });
-    }
-
-    // Heurística: se incoming <= tara, assumimos que veio apenas o peso do fluido
-    let peso_bruto: number;
-    let peso_fluido: number;
-    if (incoming <= Number(pesos.pesoTara)) {
-      peso_fluido = incoming;
-      peso_bruto = peso_fluido + Number(pesos.pesoTara);
-    } else {
-      peso_bruto = incoming;
-      peso_fluido = peso_bruto - Number(pesos.pesoTara);
-    }
-
-    if (peso_fluido < 0) peso_fluido = 0;
-    if (peso_fluido > Number(pesos.pesoMaxFluido)) peso_fluido = Number(pesos.pesoMaxFluido);
-
-    // Usar peso_fluido para previsão
-    const dias_restantes = await serviceSensor.calcularPrevisaoPorNivel(
-      peso_fluido,
-      data_ultima_troca,
-      tipo_gas
-    );
-
-    const nivel_percent = await serviceSensor.porcentagemPesoGas(tipo_gas, peso_fluido);
-    const nivel_serial = Math.max(0, Math.min(100, Math.round(nivel_percent)));
-
-    await pool.query("INSERT INTO Leitura_Sensor (id_sensor, nivel_atual) VALUES ($1, $2)", [
-      id_sensor,
-      nivel_serial,
-    ]);
-
-    return res.json({
-      success: true,
-      peso_atual: incoming,
-      peso_bruto,
-      peso_fluido,
-      nivel_percent: nivel_serial,
-      previsao_dias: dias_restantes,
-    });
-  } catch (err: unknown) {
-    const info = extractErrorInfo(err);
-    console.error("Erro em receberLeituraNivelSensor:", info.data ?? info.message);
-    return res.status(500).json({ error: "Erro ao processar leitura" });
-  }
-}
-
-/**
  * Cadastra um novo sensor no banco de dados e inicia o monitoramento no Node-RED.
- * * Caso a comunicação com o Node-RED falhe, o sensor é salvo no banco, mas a falha
- * é registrada na tabela `notification_failures` para tentativa posterior (retry pattern).
- * * @route POST /sensores/cadastrarNovoSensor
- * * @param {Request} req - Objeto de requisição do Express.
- * @param {number} req.body.id_sensor - ID único do sensor (físico).
+ * Em caso de falha na notificação com o Node-RED, o erro é registrado para tentativa posterior.
+ * @route POST /sensores
+ * @param {number} req.body.id_sensor - ID do sensor.
  * @param {number} req.body.id_cliente - ID do cliente proprietário.
  * @param {string} req.body.tipo_gas - Tipo do botijão (ex: "P13", "P45").
- * @param {Response} res - Objeto de resposta do Express.
- * * @returns {Promise<Response>} JSON confirmando o cadastro.
  */
 export async function cadastroNovoSensor(req: Request, res: Response) {
   try {
@@ -152,7 +66,7 @@ export async function cadastroNovoSensor(req: Request, res: Response) {
       await axios.post(url_sensor_nodered, payload, { timeout: 5000 });
     } catch (notifyErr: unknown) {
       const info = extractErrorInfo(notifyErr);
-      console.error("Falha ao notificar Node-RED (iniciar-monitoramento):", info.data ?? info.message);
+      console.error("Falha ao notificar Node-RED (iniciar-monitoramento): ", info.data ?? info.message);
 
       
       try {
@@ -162,13 +76,13 @@ export async function cadastroNovoSensor(req: Request, res: Response) {
           [url_sensor_nodered, JSON.stringify(payload), 0, info.message, new Date(Date.now() + 60 * 1000)]
         );
       } catch (dbErr) {
-        console.error("Falha ao gravar notification_failures:", dbErr);
+        console.error("Falha ao gravar notification_failures: ", dbErr);
       }
     }
     
 
     return res.status(201).json({
-      message: "Sensor cadastrado",
+      message: "Sensor cadastrado!",
       id_sensor,
       id_cliente,
       pesoFluido: gas_peso_max.pesoMaxFluido,
@@ -183,33 +97,104 @@ export async function cadastroNovoSensor(req: Request, res: Response) {
 }
 
 /**
+ * Recebe uma leitura de peso do sensor e calcula o percentual de gás restante.
+ * Aplica heurística para distinguir peso bruto de peso líquido e gera previsão de consumo.
+ * @route POST /sensores/:id/leituras
+ * @param {string} req.params.id - ID do sensor.
+ * @param {number} req.body.peso_atual - Peso lido pela balança (em gramas).
+ */
+export async function receberLeituraNivelSensor(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const { peso_atual } = req.body;
+
+    if (!id || peso_atual === undefined) {
+      return res.status(400).json({ error: "Payload inválido" });
+    }
+
+    const sensorInfo = await pool.query(
+      "SELECT tipo_gas, data_ultima_troca FROM Sensor WHERE id_sensor = $1",
+      [id]
+    );
+    if (sensorInfo.rowCount === 0) {
+      return res.status(404).json({ error: "Sensor não encontrado" });
+    }
+
+    const { tipo_gas, data_ultima_troca } = sensorInfo.rows[0];
+    const pesos = await serviceSensor.pesoMaxBotijaoGas(tipo_gas);
+
+    // Normalizar entrada
+    const incoming = Number(peso_atual);
+    if (Number.isNaN(incoming)) {
+      return res.status(400).json({ error: "Peso atual inválido" });
+    }
+
+    // Heurística: se incoming <= tara, assumimos que veio apenas o peso do fluido
+    let peso_bruto: number;
+    let peso_fluido: number;
+    if (incoming <= Number(pesos.pesoTara)) {
+      peso_fluido = incoming;
+      peso_bruto = peso_fluido + Number(pesos.pesoTara);
+    } else {
+      peso_bruto = incoming;
+      peso_fluido = peso_bruto - Number(pesos.pesoTara);
+    }
+
+    if (peso_fluido < 0) peso_fluido = 0;
+    if (peso_fluido > Number(pesos.pesoMaxFluido)) peso_fluido = Number(pesos.pesoMaxFluido);
+
+    // Usar peso_fluido para previsão
+    const dias_restantes = await serviceSensor.calcularPrevisaoPorNivel(
+      peso_fluido,
+      data_ultima_troca,
+      tipo_gas
+    );
+
+    const nivel_percent = await serviceSensor.porcentagemPesoGas(tipo_gas, peso_fluido);
+    const nivel_serial = Math.max(0, Math.min(100, Math.round(nivel_percent)));
+
+    await pool.query("INSERT INTO Leitura_Sensor (id_sensor, nivel_atual) VALUES ($1, $2)", [
+      id,
+      nivel_serial,
+    ]);
+
+    return res.json({
+      success: true,
+      peso_atual: incoming,
+      peso_bruto,
+      peso_fluido,
+      nivel_percent: nivel_serial,
+      previsao_dias: dias_restantes,
+    });
+  } catch (err: unknown) {
+    const info = extractErrorInfo(err);
+    console.error("Erro ao receber a leitura de peso do sensor:", info.data ?? info.message);
+    return res.status(500).json({ error: "Erro ao processar leitura" });
+  }
+}
+
+
+/**
  * Reinicializa o ciclo de vida de um sensor (troca do botijão).
- * * Ações realizadas:
- * 1. Atualiza `data_ultima_troca` para o momento atual.
- * 2. Define `status_uso` como true.
- * 3. Insere uma leitura fictícia de 100% no histórico.
- * 4. Notifica o Node-RED para resetar os parâmetros de monitoramento.
- * * @route PUT /sensores/:id_sensor/reinicializarSensor
- * * @param {Request} req - Objeto de requisição do Express.
- * @param {string} req.params.id_sensor - ID do sensor a ser resetado.
- * @param {Response} res - Objeto de resposta do Express.
- * * @returns {Promise<Response>} JSON confirmando a renovação.
+ * Atualiza a data de troca, define status como ativo e reseta parâmetros no Node-RED.
+ * @route PUT /sensores/:id/reset
+ * @param {string} req.params.id - ID do sensor.
  */
 export async function reinicializarSensor(req: Request, res: Response) {
   try {
-    const { id_sensor } = req.params;
-    if (!id_sensor) return res.status(400).json({ error: "id_sensor ausente" });
+    const { id } = req.params;
+    if (!id) return res.status(400).json({ error: "O id do sensor solicitado não foi identificado" });
 
     const renovarRes = await pool.query(
       `UPDATE Sensor
        SET data_ultima_troca = NOW(), status_uso = true
        WHERE id_sensor = $1
        RETURNING *`,
-      [id_sensor]
+      [id]
     );
 
     if (renovarRes.rowCount === 0) {
-      return res.status(404).json({ error: "Sensor não encontrado, não foi possível reiniciar" });
+      return res.status(404).json({ error: "Sensor não encontrado: não foi possível reiniciar" });
     }
 
     const sensor = renovarRes.rows[0];
@@ -221,16 +206,16 @@ export async function reinicializarSensor(req: Request, res: Response) {
     const previsao_inicial = await serviceSensor.calcularPrevisaoPorNivel(pesoMaxFluido, new Date(), tipo_gas);
 
     try {
-      await pool.query("INSERT INTO Leitura_Sensor (id_sensor, nivel_atual) VALUES ($1, $2)", [id_sensor, 100]);
+      await pool.query("INSERT INTO Leitura_Sensor (id_sensor, nivel_atual) VALUES ($1, $2)", [id, 100]);
     } catch (dbErr) {
-      console.error(`Erro ao inserir Leitura_Sensor para id_sensor=${id_sensor}:`, dbErr);
+      console.error(`Erro ao inserir Leitura_Sensor para id_sensor=${id}:`, dbErr);
       // não aborta a reinicialização
     }
 
     const node_red_url = `${NODE_RED_BASE}/sensor/reset`;
     const payload = {
       message: "Botijão renovado com sucesso!",
-      id_sensor,
+      id,
       pesoBruto,
       pesoTara,
       pesoFluido: pesoMaxFluido,
@@ -240,7 +225,7 @@ export async function reinicializarSensor(req: Request, res: Response) {
       await axios.post(node_red_url, payload, { timeout: 5000 });
     } catch (nrErr: unknown) {
       const info = extractErrorInfo(nrErr);
-      console.error(`Falha ao notificar Node-RED (${node_red_url}) para id_sensor=${id_sensor}:`, info.data ?? info.message);
+      console.error(`Falha ao notificar Node-RED (${node_red_url}) para id_sensor=${id}:`, info.data ?? info.message);
       
       try {
         await pool.query(
@@ -249,43 +234,40 @@ export async function reinicializarSensor(req: Request, res: Response) {
           [node_red_url, JSON.stringify(payload), 0, info.message, new Date(Date.now() + 60 * 1000)]
         );
       } catch (dbErr) {
-        console.error("Falha ao gravar notification_failures:", dbErr);
+        console.error("Falha ao gravar notification_failures: ", dbErr);
       }
     }
 
     return res.status(200).json({
       message: "Botijão renovado com sucesso!",
-      id_sensor: Number(id_sensor),
+      id_sensor: Number(id),
       pesoBruto,
       pesoFluido: pesoMaxFluido,
       previsao_dias: previsao_inicial,
     });
   } catch (err: unknown) {
     const info = extractErrorInfo(err);
-    console.error("Erro em reinicializarSensor:", info.data ?? info.message);
+    console.error("Erro ao reinicializar o sensor: ", info.data ?? info.message);
     return res.status(500).json({ error: "Falha ao renovar o ciclo do sensor", details: info.message });
   }
 }
 
 /**
- * Verifica o estado atual de uso do sensor (Renovado/Em uso ou Em espera).
- * * @route GET /sensores/cliente/:id_cliente/:id_sensor
- * * @param {Request} req - Objeto de requisição do Express.
+ * Verifica o estado atual de uso do sensor (ex: "Renovado", "Em uso" ou "Em espera").
+ * @route GET /sensores/:id/clientes/:id_cliente/status
+ * @param {string} req.params.id - ID do sensor.
  * @param {string} req.params.id_cliente - ID do cliente.
- * @param {string} req.params.id_sensor - ID do sensor.
- * @param {Response} res - Objeto de resposta do Express.
- * * @returns {Promise<Response>} JSON com o status.
  */
-export async function verficarEstadoCliente(req: Request, res: Response) {
+export async function verificarEstadoCliente(req: Request, res: Response) {
   try {
-    const { id_cliente, id_sensor } = req.params;
+    const { id, id_cliente } = req.params;
 
     const cliente_info = await pool.query(
-      "SELECT status_uso FROM Sensor WHERE id_cliente = $1 AND id_sensor = $2",
-      [id_cliente, id_sensor]
+      "SELECT status_uso FROM Sensor WHERE id_sensor = $1 AND id_cliente = $2",
+      [id, id_cliente]
     );
     if (cliente_info.rowCount === 0) {
-      return res.status(404).json({ error: "Cliente não encontrado" });
+      return res.status(404).json({ error: "Cliente não encontrado!" });
     }
 
     const status_uso = cliente_info.rows[0].status_uso;
@@ -294,27 +276,25 @@ export async function verficarEstadoCliente(req: Request, res: Response) {
     return res.status(200).json({ status });
   } catch (err: unknown) {
     const info = extractErrorInfo(err);
-    console.error("Erro ao verificar estado:", info.data ?? info.message);
+    console.error("Erro ao verificar estado: ", info.data ?? info.message);
     return res.status(500).json({ error: "Erro interno ao verificar estado" });
   }
 }
 
 /**
- * Verifica o estado atual de uso do sensor (Renovado/Em uso ou Em espera).
- * * @route GET /sensores/cliente/:id_cliente/:id_sensor
- * * @param {Request} req - Objeto de requisição do Express.
+ * Altera o status de uso do sensor (Ex: alterar de "Em espera" para "Renovado").
+ * @route PUT /sensores/:id/clientes/:id_cliente/status
+ * @param {string} req.params.id - ID do sensor.
  * @param {string} req.params.id_cliente - ID do cliente.
- * @param {string} req.params.id_sensor - ID do sensor.
- * @param {Response} res - Objeto de resposta do Express.
- * * @returns {Promise<Response>} JSON com o status.
+ * @param {boolean} req.body.status_uso - Novo status de uso.
  */
 export async function renovarStatusSensor(req: Request, res: Response) {
   try {
-    const { id_cliente, id_sensor } = req.params;
+    const { id, id_cliente } = req.params;
     const { status_uso } = req.body;
 
     if (typeof status_uso !== "boolean") {
-      return res.status(400).json({ error: "Campo 'status_uso' é obrigatório e deve ser booleano" });
+      return res.status(400).json({ error: "O campo 'status_uso' é obrigatório e deve ser booleano" });
     }
 
     const result = await pool.query(
@@ -322,11 +302,11 @@ export async function renovarStatusSensor(req: Request, res: Response) {
        SET status_uso = $1
        WHERE id_cliente = $2 AND id_sensor = $3
        RETURNING id_sensor, id_cliente, tipo_gas, status_uso, data_ultima_troca`,
-      [status_uso, id_cliente, id_sensor]
+      [status_uso, id, id_cliente]
     );
 
     if (result.rowCount === 0) {
-      return res.status(404).json({ error: "Sensor não encontrado para esse cliente" });
+      return res.status(404).json({ error: "Sensor não encontrado para esse cliente!" });
     }
 
     // Notificar Node-RED (não deve falhar a resposta final)
@@ -335,7 +315,7 @@ export async function renovarStatusSensor(req: Request, res: Response) {
       await axios.post(
         nodeRedUrl,
         {
-          id_sensor,
+          id,
           id_cliente,
           status_uso,
         },
@@ -343,26 +323,26 @@ export async function renovarStatusSensor(req: Request, res: Response) {
       );
     } catch (nrErr: unknown) {
       const info = extractErrorInfo(nrErr);
-      console.error("Falha ao notificar Node-RED sobre alteração de status:", info.data ?? info.message);
+      console.error("Falha ao notificar Node-RED sobre alteração de status: ", info.data ?? info.message);
       // opcional: registrar em notification_failures
       try {
         await pool.query(
           `INSERT INTO notification_failures (url, payload, attempts, last_error, next_try_at)
            VALUES ($1, $2::jsonb, $3, $4, $5)`,
-          [`${NODE_RED_BASE}/sensor/status-change`, JSON.stringify({ id_sensor, id_cliente, status_uso }), 0, info.message, new Date(Date.now() + 60 * 1000)]
+          [`${NODE_RED_BASE}/sensor/status-change`, JSON.stringify({ id, id_cliente, status_uso }), 0, info.message, new Date(Date.now() + 60 * 1000)]
         );
       } catch (dbErr) {
-        console.error("Falha ao gravar notification_failures:", dbErr);
+        console.error("Falha ao gravar notification_failures: ", dbErr);
       }
     }
 
     return res.status(200).json({
-      message: "Status do sensor atualizado com sucesso",
+      message: "Status do sensor atualizado com sucesso!",
       sensor: result.rows[0],
     });
   } catch (err: unknown) {
     const info = extractErrorInfo(err);
-    console.error("Erro renovarStatusSensor:", info.data ?? info.message);
-    return res.status(500).json({ error: "Erro ao atualizar status do sensor", details: info.message });
+    console.error("Erro ao renovar o status do sensor: ", info.data ?? info.message);
+    return res.status(500).json({ error: "Erro ao atualizar o status do sensor", details: info.message });
   }
 }

@@ -208,7 +208,6 @@ export async function privacidadeFornecedor(req: Request, res: Response) {
 /**
  * Adiciona horário(s) de funcionamento de um fornecedor específico por dia da semana.
  * Cada fornecedor pode cadastrar um horário de abertura e fechamento para cada dia da semana (1 = Segunda, 7 = Domingo).
- *
  * @route POST /fornecedores/:id/horarios
  * @param {string} req.params.id - ID do fornecedor.
  * @param {Array<Object>} req.body - Lista de horários de funcionamento do fornecedor.
@@ -280,7 +279,6 @@ export async function adicionarHorarioFuncionamento(req: Request, res: Response)
  * - Verifica se já existe horário cadastrado
  * - Se o horário for igual ao existente, retorna erro
  * - Se o horário for diferente, atualiza o registro
- *
  * @route PUT /fornecedores/:id/horarios
  * @param {string} req.params.id - ID do fornecedor.
  * @param {Array<Object>} req.body - Lista de horários de funcionamento.
@@ -338,7 +336,6 @@ export async function alterarHorarioFuncionamento(req: Request, res: Response) {
 /**
  * Lista os horários de funcionamento de um fornecedor específico.
  * Os horários são ordenados pelo dia da semana (1 = Segunda a 7 = Domingo).
- *
  * @route GET /fornecedores/:id/horarios
  * @param {string} req.params.id - ID do fornecedor.
  */

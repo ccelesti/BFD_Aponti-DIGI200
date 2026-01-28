@@ -3,19 +3,13 @@ import * as controleDoSensor from '../controllers/sensor.controllers';
 
 const router = Router();
 
-router.post("/sensores",controleDoSensor.cadastroNovoSensor //
-);
+// Gestão e Operação do Sensor
+router.post("/",controleDoSensor.cadastroNovoSensor);
+router.post("/:id/leituras",controleDoSensor.receberLeituraNivelSensor);
+router.put("/:id/reset",controleDoSensor.reinicializarSensor);
 
-router.post("/sensores/:id_sensor/leituras",controleDoSensor.receberLeituraNivelSensor
-);
-
-router.put("/sensores/:id_sensor/reset",controleDoSensor.reinicializarSensor //
-);
-
-router.get("/clientes/:id_cliente/sensores/:id_sensor/status",controleDoSensor.verficarEstadoCliente //
-);
-
-router.put("/clientes/:id_cliente/sensores/:id_sensor/status",controleDoSensor.renovarStatusSensor //
-);
+// Status e Vínculo com o Cliente
+router.get("/:id/clientes/:id_cliente/status",controleDoSensor.verificarEstadoCliente);
+router.put("/:id/clientes/:id_cliente/status",controleDoSensor.renovarStatusSensor);
 
 export default router;
