@@ -117,14 +117,11 @@ Nesse contexto, foram aplicados conhecimentos relacionados a:
 
 | Nome | Contribuição | Roles | Linkedin | Github |
 |------|--------------|-------|----------|--------|
-| **Camila Moura** | **Gestão do Projeto:** condução de reuniões, definição de pautas, mediação com o cliente e liderança do time; **Concepção do Produto:** brainstorming, reuniões com o cliente e sugestões no protótipo (Figma); **Planejamento e Backlog:** organização e priorização do backlog no Trello, padronização de requisitos e revisão das contribuições; **Documentação:** consolidação da versão inicial, reconstrução da documentação final, redefinição dos requisitos funcionais e ajuste do escopo do MVP, elaboração do README, documentação de rotas e controllers no Postman; **Banco de Dados:** modelagem, definição de tabelas e relacionamentos, scripts SQL, população via pgAdmin/PostgreSQL e via requisições HTTP, integração do PostgreSQL com a API; **Arquitetura Backend:** definição do padrão MVC, escolha das tecnologias e organização da estrutura do projeto. | Product Owner, Líder Técnica, Desenvolvedora Backend | [/camilacelestino](https://www.linkedin.com/in/camilacelestino) | [/ccelesti](https://github.com/ccelesti) |
-| **Ruberval Brasileiro** | **Concepção do Produto:** participação em brainstormings e reuniões com o cliente; **Planejamento e Organização:** apoio nos próximos passos do projeto e atuação informal como vice-líder; **Documentação:** elaboração da versão inicial da documentação técnica de requisitos, pesquisa da lógica de negócio e apoio à modelagem conceitual; **Protótipo (Figma):** criação de fluxos de telas e ajustes conforme feedback do time; **Desenvolvimento Backend:** desenvolvimento de validações de dados no backend; **Apoio à Equipe:** orientação sobre uso do Trello e Google Docs. | Design & Dev Team | [/ruberval-brasileiro](https://www.linkedin.com/in/ruberval-brasileiro-5996a7324/) | [/rubervalbrasileiro](https://github.com/rubervalbrasileiro) |
-| **Cícera Maria** | **Concepção do Produto:** participação em brainstormings e reuniões com o cliente; **Planejamento e Backlog:** apoio na organização do backlog no Trello; **Documentação:** suporte na elaboração da documentação final, com transcrição e organização dos requisitos conforme orientações da gestão. | Docs Team | [/ciceradevback](https://www.linkedin.com/in/ciceradevback) | [/ciceradevback](https://github.com/ciceradevback) |
-| **Adriel Gomes** | **Concepção do Produto:** participação em brainstormings, reuniões com o cliente e sugestões no protótipo (Figma); **Documentação:** auxílio na elaboração do README; **Desenvolvimento Backend:** desenvolvimento de funções e lógica relacionadas ao sensor virtual do botijão de gás. | Dev Team | [/adriel-gomes](https://www.linkedin.com/in/adriel-gomes-472974218/) | [/Adriel-grs](https://github.com/Adriel-grs) |
-| **João Henrique** | **Concepção do Produto:** participação em brainstormings e reuniões com o cliente; **Gestão Inicial do Projeto:** atuação como líder no início do projeto, conduzindo reuniões e organizando as primeiras atividades; **Documentação:** apoio na construção da primeira versão da documentação de requisitos. *(Posteriormente, desligou-se do projeto durante a fase prática.)* | Líder Inicial | [/joao-melo](https://www.linkedin.com/in/joao-melo16/) | [/Dev-JoaoMelo](https://github.com/Dev-JoaoMelo) |
-
-<!--- | **Adriel Gomes** | auxílio na elaboração do vídeo de demonstração do sistema. | Dev Team |
-| **Camila Moura** | Liderança do projeto, gestão das decisões técnicas, de escopo e prioridades, documentação técnica de requisitos, revisão e controle de qualidade geral; desenvolvimento e apresentação de slides e pitch, vídeo de demonstração do sistema. | Liderança / Dev & Docs Team | -->
+| **Camila Moura** | **Gestão do Projeto:** liderança do projeto, condução de reuniões, definição de pautas, revisão e controle de qualidade geral do sistema e da documentação; **Concepção do Produto:** brainstorming, reuniões com stakeholders e sugestões no protótipo (Figma); **Planejamento e Backlog:** organização e priorização do backlog no Trello, padronização de requisitos e revisão das contribuições; **Documentação Técnica:** consolidação da versão inicial, reconstrução da documentação final, redefinição dos requisitos funcionais e ajuste do escopo do MVP, elaboração do README e documentação técnica das rotas e controllers da API no Postman; **Banco de Dados:** modelagem e implementação do schema, definição de tabelas e relacionamentos, criação de scripts SQL, população via pgAdmin/PostgreSQL e via requisições HTTP, integração prática do PostgreSQL com a API; **Arquitetura Backend:** definição e implementação do padrão MVC, escolha das tecnologias, organização da estrutura do projeto e desenvolvimento de controllers e rotas principais da API; **Comunicação e Apresentação:** elaboração e apresentação do pitch, desenvolvimento dos slides, roteiro e gravação do vídeo de demonstração do sistema. | Product Owner, Liderança / Dev & Docs Team | [/camilacelestino](https://www.linkedin.com/in/camilacelestino) | [/ccelesti](https://github.com/ccelesti) |
+| **Ruberval Brasileiro** | **Concepção do Produto:** participação em brainstormings e reuniões com stakeholders; **Planejamento e Organização:** apoio nos próximos passos do projeto e atuação informal como vice-líder; **Documentação Técnica:** elaboração da versão inicial da documentação técnica de requisitos, pesquisa da lógica de negócio e apoio à modelagem conceitual; **Protótipo (Figma):** criação de fluxos de telas e ajustes conforme feedback do time; **Desenvolvimento Backend:** desenvolvimento de validações de dados; **Apoio à Equipe:** orientação sobre uso do Trello e Google Docs. | Design & Dev Team | [/ruberval-brasileiro](https://www.linkedin.com/in/ruberval-brasileiro-5996a7324/) | [/rubervalbrasileiro](https://github.com/rubervalbrasileiro) |
+| **Cícera Maria** | **Concepção do Produto:** participação em brainstormings e reuniões com stakeholders; **Planejamento e Backlog:** apoio operacional na organização do backlog no Trello a partir dos requisitos definidos pela liderança; **Documentação Técnica:** suporte na atualização da documentação final, com substituição e organização dos requisitos funcionais conforme orientações da liderança. | Docs Team | [/ciceradevback](https://www.linkedin.com/in/ciceradevback) | [/ciceradevback](https://github.com/ciceradevback) |
+| **Adriel Gomes** | **Concepção do Produto:** participação em brainstormings, reuniões com stakeholders e sugestões no protótipo (Figma); **Documentação Técnica:** apoio na elaboração do README, com foco em instruções de instalação de dependências, observações relacionadas ao sensor simulado; **Desenvolvimento Backend:** desenvolvimento de funções e lógica relacionadas ao sensor virtual do botijão de gás; **Comunicação e Apresentação:** apoio na gravação e edição do vídeo de demonstração do sistema. | Dev Team | [/adriel-gomes](https://www.linkedin.com/in/adriel-gomes-472974218/) | [/Adriel-grs](https://github.com/Adriel-grs) |
+| **João Henrique** | **Concepção do Produto:** participação em brainstormings e reuniões com stakeholders; **Gestão Inicial do Projeto:** atuação como líder no início do projeto, conduzindo reuniões e organizando as primeiras atividades; **Documentação Técnica:** apoio na construção da primeira versão da documentação de requisitos. *(Posteriormente, desligou-se do projeto durante a fase prática.)* | Líder Inicial | [/joao-melo](https://www.linkedin.com/in/joao-melo16/) | [/Dev-JoaoMelo](https://github.com/Dev-JoaoMelo) |
 
 <br>
 
@@ -133,7 +130,7 @@ Nesse contexto, foram aplicados conhecimentos relacionados a:
 | Nome | Contribuição | Roles | Linkedin | Github |
 |------|--------------|-------|----------|--------|
 | **Gabriel Lucas** | **Documentação do Projeto:** participação ativa na reconstrução dos requisitos, discussões sobre regras de negócio e refinamento da documentação técnica de requisitos, documentação de rotas e controllers no Postman; **Banco de Dados:** suporte à modelagem do banco de dados, sugestões técnicas, apoio na criação e execução de scripts SQL e criação de views para consultas do sistema;  **Versionamento e Execução:** orientações sobre Git/GitHub; **Desenvolvimento Backend:** desenvolvimento de funções e lógica relacionadas ao domínio de Fornecedores. | Backend & Database Support | [/gabriel-lucas](https://www.linkedin.com/in/gabriel-lucas-de-oliveira-xavier-507564358/) | [/Ggeasy1574](https://github.com/Ggeasy1574) |
-| **Leonardo Rafael** | **Documentação do Projeto:** suporte técnico na reconstrução e validação dos requisitos e decisões de escopo da documentação técnica de requisitos; **Arquitetura e Tecnologias:** suporte na decisão de arquitetura MVC, definição de banco de dados, dependências e ferramentas de desenvolvimento; **Versionamento e Execução:** orientações sobre Git/GitHub e etapas iniciais de execução do projeto; **Comunicação e Apresentação:** apoio na elaboração do README, slides do pitch e suporte à evolução da logotipo. | Consultoria Técnica, Documentação & Revisão| [/leonardorafael1604](https://www.linkedin.com/in/leonardorafael1604/) | [/LeonardoRDA1604](https://github.com/LeonardoRDA1604) |
+| **Leonardo Rafael** | **Documentação do Projeto:** suporte técnico na reconstrução e validação dos requisitos e decisões de escopo da documentação técnica de requisitos, incluindo sugestão do uso do Postman para documentação de rotas e controllers; **Arquitetura e Tecnologias:** suporte na decisão de arquitetura MVC, definição de banco de dados, sugestão de hospedagem em ambiente remoto, dependências e ferramentas de desenvolvimento; **Versionamento e Execução:** orientações sobre Git/GitHub e etapas iniciais de execução do projeto; **Comunicação e Apresentação:** apoio na elaboração do README, elaboração do roteiro e dos slides do pitch, além de suporte à evolução da logotipo. | Consultoria Técnica, Documentação & Revisão| [/leonardorafael1604](https://www.linkedin.com/in/leonardorafael1604/) | [/LeonardoRDA1604](https://github.com/LeonardoRDA1604) |
 | **Samuel Victor** | **Documentação do Projeto:** apoio na etapa final de revisão e padronização da documentação técnica de requisitos, com melhoria da escrita, verificação de consistência das informações e adequação ao formato final, seguindo orientações da liderança. | Documentação & Revisão | [/samuel-victor](https://www.linkedin.com/in/samuel-victor-3426b3368/) | [/samuel-victorr](https://github.com/SamuelVictorr) |
 | **Leandro Wilke** | **Identidade Visual:** melhorias na logotipo do projeto, com ajustes de definição, cores e tipografia, contribuindo para a identidade visual final. | Design Gráfico | [/leandro-wilke](https://www.linkedin.com/in/leandro-wilke/) | [/LeandroWilkeDev](https://github.com/LeandroWilkeDev) |
 
@@ -144,65 +141,66 @@ Nesse contexto, foram aplicados conhecimentos relacionados a:
 ```bash
 BFD_APONTI-DIGI200/
 ├── back-end/
-│   ├── node_modules/
+│   ├── node_modules/             # Dependências do projeto
 │   │
-│   ├── scripts/                  # Scripts SQL
-│   │   └── schema.sql
+│   ├── scripts/                  # Scripts de Banco de Dados
+│   │   └── schema.sql            # Script DDL de criação das tabelas
 │   │
 │   ├── src/
-│   │   ├── assets/               # Mídia
-│   │   │   ├── Logo/
-│   │   │   │   ├── BotijON.png   # Logotipo do BotijON
+│   │   ├── assets/               # Arquivos de Mídia
+│   │   │   └── Logo/BotijON.png  # Logotipo do BotijON
+│   │   │   
 │   │   ├── controllers/          # Lógica das requisições
 │   │   │   ├── bairrofornecedor.controller.ts
 │   │   │   ├── cliente.controller.ts
 │   │   │   ├── fornecedor.controller.ts
-│   │   │   ├── index.ts
 │   │   │   ├── sensor.controller.ts
-│   │   │   └── vinculo.controller.ts
+│   │   │   ├── vinculo.controller.ts
+│   │   │   └── index.ts          # Exportador dos controladores
 │   │   │
-│   │   ├── database/             # Configuração do banco de dados
-│   │   │   └── db.ts
+│   │   ├── database/             # Conexão com PostgreSQL
+│   │   │   └── db.ts             # Configuração do Pool de conexões
 │   │   │
 │   │   ├── routes/               # Definição das rotas da API
 │   │   │   ├── cliente.routes.ts
 │   │   │   ├── fornecedor.routes.ts
-│   │   │   ├── index.ts
 │   │   │   ├── sensor.routes.ts
-│   │   │   └── vinculo.routes.ts
+│   │   │   ├── vinculo.routes.ts
+│   │   │   └── index.ts          # Roteador principal e agrupamento
 │   │   │
-│   │   ├── services/             # 
-│   │   │   └── sensor.services.ts
+│   │   ├── services/             # Regras de Negócio e Algoritmos
+│   │   │   └── sensor.services.ts # Heurística de cálculo de nível e previsão
 │   │   │
-│   │   ├── app.ts                # Configuração principal da aplicação
-│   │   └── models.ts             # Tipagens / interfaces
+│   │   ├── models.ts             # Interfaces e Tipagens TypeScript
+│   │   └── app.ts                # Configuração principal da aplicação
 │   │
-│   ├── dockerfile                # Docker do backend
-│   ├── docker.ignore
-│   ├── package.json
-│   ├── package-lock.json
-│   └── tsconfig.json
+│   ├── Dockerfile                # Imagem Docker do Backend
+│   ├── .dockerignore             # Arquivos ignorados pelo Docker
+│   ├── package.json              # Dependências e Scripts NPM
+│   ├── package-lock.json         # Versionamento exato das dependências
+│   └── tsconfig.json             # Configuração do TypeScript
 │
-├── iot-simulator/                # Simulador do sensor de gás (Node-RED)
+├── iot-simulator/                # Simulação IoT (Ambiente Node-RED)
+│   └── flows.json                # Fluxos de automação e geração de dados
 │
 ├── .env                          # Variáveis de ambiente
-├── .env.example                  # Exemplo de variáveis de ambiente
-├── docker-compose.yml            # Orquestração dos serviços
-├── .gitignore
-├── LICENSE
-└── README.md                     # README do Projeto
+├── .env.example                  # Modelo de variáveis de ambiente
+├── docker-compose.yml            # Orquestração dos Containers
+├── .gitignore                    # Arquivos ignorados pelo Git
+├── LICENSE                       # Licença do projeto
+└── README.md                     # Documentação do Projeto
 ```
 
 ## Versão Resumida da Arquitetura
 
 ```bash
-back-end/
-├── src/
-│   ├── routes/        → Recebe as requisições HTTP e define os endpoints da API
-│   ├── controllers/   → Contém a lógica que processa a requisição e chama os serviços/repositórios
-│   ├── database/      → Configura a conexão com o banco de dados
-│   ├── models.ts      → Define interfaces e tipagens do sistema
-│   └── app.ts         → Inicializa a aplicação e registra middlewares e rotas
+back-end/src/
+├── routes/        → Pontos de entrada. Recebe a requisição HTTP e direciona para o Controller
+├── controllers/   → Gerencia a requisição. Valida dados e devolve a resposta (JSON)
+├── services/      → Inteligência do sistema. Contém cálculos de previsão e heurísticas
+├── database/      → Acesso a dados. Executa as queries SQL diretamente no banco
+├── models.ts      → Define interfaces e tipagens esperadas pelo sistema
+└── app.ts         → Inicializa a aplicação e registra middlewares e rotas
 ```
 
 ---
